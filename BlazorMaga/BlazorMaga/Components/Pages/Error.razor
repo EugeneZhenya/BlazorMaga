@@ -1,0 +1,58 @@
+﻿@page "/Error"
+@rendermode InteractiveServer
+@using System.Diagnostics
+
+<PageTitle>Помилка</PageTitle>
+
+<section class="ds s-py-90 s-py-xl-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Помилка</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>При обробці Вашого запиту виникла помилка.</span>
+                </p>
+                <div class="divider-50 divider-xl-60"></div>
+                @if (ShowRequestId)
+                {
+                    <p>
+                        <strong>Ідентифікатор запиту:</strong> <code>@RequestId</code>
+                    </p>
+                }
+            </div>
+            <div class="col-12 text-center" style="margin-top: 10em;">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Режим розробника</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>Перехід до середовища розробника відобразить більш детальну інформацію про помилку, що сталася.</span>
+                </p>
+                <div class="divider-50 divider-xl-60"></div>
+                <p>
+                    <strong>
+                        Середовище розробника не слід вмикати для розгорнутих застосунків.
+                    </strong>
+                    Це може призвести до відображення конфіденційної інформації з винятків кінцевим користувачам.
+                    Для локального налагодження увімкніть середовище розробника, встановивши змінну середовища <strong>ASPNETCORE_ENVIRONMENT</strong> у значення <strong>Development</strong>
+                    та перезапустіть застосунок.
+
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code{
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    private string? RequestId { get; set; }
+    private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+    protected override void OnInitialized() =>
+        RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+}

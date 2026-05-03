@@ -1,0 +1,124 @@
+﻿@page "/upload"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>Завантаження файлів</PageTitle>
+
+<section class="ds s-overlay s-parallax section-video s-py-90 s-pt-xl-150 s-pb-xl-200 text-center" style="background-position: 50% -12px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Завантаження файлів</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>Ви має бути авторизованим користувачем аби мати змогу завнтажувати файли</span>
+                </p>
+                <div class="divider-40 divider-xl-60"></div>
+                <div class="col-12">
+                    <!--  -->
+                    <label class="btn btn-booking" style="max-width: 25%; margin-right: 1.5em; background-color: transparent; border: 1px solid white;">
+                        Вибрати файли
+                        <InputFile OnChange="OnInputFileChange" multiple accept="image/*,video/*" style="display:none" />
+                    </label>
+                    <button @onclick="UploadFiles">Завантажити</button>
+                </div>
+                <div class="col-12">
+                    @if (!string.IsNullOrEmpty(StatusMessage))
+                    {
+                        <p class="text-center fs-20 mt-4">
+                            <span>@StatusMessage</span>
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ds s-pt-85 s-pb-90 s-pt-xl-145 s-pb-xl-150">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="grid-container gap-30 gallery-layout-1">
+					@foreach (var preview in Previews)
+					{
+						if (preview.ContentType.StartsWith("image"))
+						{
+							<div class="grid-box">
+								<div class="vertical-item item-gallery ">
+									<div class="item-media">
+										<img src="@preview.Url" alt="@Path.GetFileName(preview.Url)">
+									</div>
+								</div>
+							</div>
+						}
+						else if (preview.ContentType.StartsWith("video"))
+						{
+							<div class="grid-box">
+								<div class="vertical-item item-gallery ">
+									<div class="item-media">
+										<video src="@preview.Url" style="width: 380px; height: 360px;" controls />
+									</div>
+								</div>
+							</div>
+						}
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@code {
+    private List<IBrowserFile> SelectedFiles = new();
+    private List<(string ContentType, string Url)> Previews = new();
+    private string? StatusMessage;
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            SelectedFiles = e.GetMultipleFiles().ToList();
+            StatusMessage = $"Вибрано {SelectedFiles.Count} файл(ів).";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = ex.Message;
+        }
+    }
+
+    private async Task UploadFiles()
+    {
+        if (!SelectedFiles.Any())
+        {
+            StatusMessage = "Файли не вибрано.";
+            return;
+        }
+
+        foreach (var file in SelectedFiles)
+        {
+            var originalName = StringUtilities.Translit(Path.GetFileNameWithoutExtension(file.Name));
+            var extension = Path.GetExtension(file.Name);
+
+            var safeBase = string.Concat(originalName.Split(Path.GetInvalidFileNameChars()));
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+
+
+            var safeName = $"{safeBase}_{timestamp}{extension}";
+            var filePath = Path.Combine("wwwroot/uploads", safeName);
+
+            await using var stream = file.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024);
+            await using var fs = new FileStream(filePath, FileMode.Create);
+            await stream.CopyToAsync(fs);
+
+            var relativeUrl = $"/uploads/{safeName}";
+            Previews.Add((file.ContentType, relativeUrl));
+
+        }
+
+        StatusMessage = $"Файли успішно завантажено ({SelectedFiles.Count}).";
+        SelectedFiles.Clear();
+    }
+}

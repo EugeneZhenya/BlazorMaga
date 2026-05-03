@@ -1,0 +1,39 @@
+﻿@page "/article/{ArticleId:int}"
+@page "/article/{ArticleId:int}/{ArticleTitle}"
+@rendermode InteractiveServer
+
+<PageTitle>@ArticleTitle</PageTitle>
+
+<section class="page_title ds s-overlay s-parallax s-pt-130 s-pt-xl-150 s-pb-65">
+	<div class="container">
+		<div class="row">
+
+			<div class="col-md-12">
+				<h1>@ArticleTitle</h1>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						<a href="/">Початок</a>
+					</li>
+					<li class="breadcrumb-item">
+						<a href="#">Меню</a>
+					</li>
+					<li class="breadcrumb-item active">
+						@ArticleTitle
+					</li>
+				</ol>
+			</div>
+
+		</div>
+	</div>
+</section>
+
+@code {
+	[Parameter] public int ArticleId { get; set; }
+	[Parameter] public string ArticleTitle { get; set; }
+
+	protected override void OnInitialized()
+	{
+        Console.WriteLine($"ArticleId: {ArticleId}");
+		Console.WriteLine($"ArticleTitle: {ArticleTitle}");
+	}
+}

@@ -1,0 +1,174 @@
+﻿<EditForm class="form-registration c-mb-20 c-gutter-20" Model="Article" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <InputText type="text" name="Title" class="form-control" required placeholder="Назва" aria-required="true" @bind-Value="Article.Title" />
+            </div>
+
+            <div class="form-group">
+                <div class="select-wrap">
+                    <div class="select_container">
+                        <InputSelect class="postform" @bind-Value="SelectedMenuId">
+                            <option value="0">Меню:</option>
+                            @foreach (var menu in Menus)
+                            {
+                                <option value="@menu.Id">@menu.Name</option>
+                            }
+                        </InputSelect>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="select-wrap">
+                    <div class="select_container">
+                        <InputSelect class="postform" @bind-Value="SelectedTopicId">
+                            <option value="0">Тема:</option>
+                            @foreach (var topic in FilteredTopics)
+                            {
+                                <option value="@topic.Id">@topic.Name</option>
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <InputText type="text" name="Description" class="form-control" required placeholder="Опис" aria-required="true" @bind-Value="Article.Description" />
+            </div>
+            <div class="input-group" style="padding-top: 10px;">
+                <InputText type="text" name="Picture" class="search-field form-control" required placeholder="Постер" @bind-Value="Article.Picture" @onfocus="OpenGallery" />
+
+                @if (!string.IsNullOrEmpty(Article.Picture))
+                {
+                    if (IsImage(Article.Picture))
+                    {
+                        <span class="input-group-text" style="background-color: transparent; border: none;">
+                            <img src="@Article.Picture" alt="@Path.GetFileName(Article.Picture)" style="max-height:40px; max-width:60px;" />
+                        </span>
+                    }
+                    else if (IsVideo(Article.Picture))
+                    {
+                        <span class="input-group-text" style="background-color: transparent; border: none;">
+                            <i class="fa fa-video-camera"></i>
+                        </span>
+                    }
+
+                }
+
+                <span class="input-group-text upload-btn">
+                    <a href="/upload" target="_blank" title="Завантажити нове" class="btn btn-outline-maincolor" style="min-width: 70px; max-height: 50px; padding: 15px;">
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                    </a>
+                </span>
+            </div>
+
+            <FileGallery @ref="Gallery" OnSelect="SelectFile" />
+
+            <!--
+            <div class="form-group">
+                <InputDate name="Created" class="form-control" placeholder="Дата публікації" @bind-Value="Article.Created" disabled />
+            </div>
+            -->
+            <!--
+                <MultipleSelector Selected="Selected" NoSelected="NotSelected" />
+            -->
+            <div class="form-group">
+                <Typeahead SelectedTags="SelectedTags" NotSelectedTags="NotSelectedTags" OnTagsChanged="HandleTagsChanged" />
+            </div>
+        </div>
+
+
+        <div class="col-12">
+            <HtmlEditor @bind-Content="Article.Content" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-maincolor mt-30 d-block" style="margin-top: 50px;">Зберегти</button>
+</EditForm>
+
+@code {
+    [Parameter] public Article Article { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public List<Tag> SelectedTags { get; set; } = new List<Tag>();
+    [Parameter] public List<Tag> NotSelectedTags { get; set; } = new List<Tag>();
+    [Parameter] public List<Menu> Menus { get; set; } = new List<Menu>();
+    [Parameter] public List<Topic> Topics { get; set; } = new List<Topic>();
+
+
+    private FileGallery? Gallery;
+    private List<MultipleSelectorModel> Selected = new List<MultipleSelectorModel>();
+    private List<MultipleSelectorModel> NotSelected = new List<MultipleSelectorModel>();
+    private List<Topic> FilteredTopics = new List<Topic>();
+
+    private int _selectedMenuId;
+    private int SelectedMenuId
+    {
+        get => _selectedMenuId;
+        set
+        {
+            if (_selectedMenuId != value)
+            {
+                _selectedMenuId = value;
+                FilteredTopics = Topics.Where(t => t.MenuId == value).ToList();
+                SelectedTopicId = 0;
+            }
+        }
+    }
+
+    private int _selectedTopicId;
+    private int SelectedTopicId
+    {
+        get => _selectedTopicId;
+        set
+        {
+            if (_selectedTopicId != value)
+            {
+                _selectedTopicId = value;
+                Article.TopicId = value;
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        if (Article.TopicId > 0)
+        {
+            var topic = Topics.FirstOrDefault(t => t.Id == Article.TopicId);
+            if (topic != null)
+            {
+                SelectedMenuId = topic.MenuId;
+                FilteredTopics = Topics.Where(t => t.MenuId == SelectedMenuId).ToList();
+                SelectedTopicId = (int)topic.Id;
+            }
+        }
+        else
+        {
+            SelectedMenuId = 0;
+            SelectedTopicId = 0;
+        }
+
+        Selected = SelectedTags.Select(x => new MultipleSelectorModel(x.Id.ToString(), x.Mark)).ToList();
+        NotSelected = NotSelectedTags.Select(x => new MultipleSelectorModel(x.Id.ToString(), x.Mark)).ToList();
+    }
+
+    private void OpenGallery(FocusEventArgs e) => Gallery?.Show(FileGallery.GalleryMode.All);
+
+    private void SelectFile(string url)
+    {
+        Article.Picture = url;
+    }
+
+    private bool IsImage(string path) =>
+        new[] { ".jpg", ".jpeg", ".png", ".gif" }.Contains(Path.GetExtension(path).ToLower());
+
+    private bool IsVideo(string path) =>
+        new[] { ".mp4", ".webm", ".ogg" }.Contains(Path.GetExtension(path).ToLower());
+
+    private void HandleTagsChanged(List<Tag> tags)
+    {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.WriteLine("Обрані теги: " + string.Join(", ", tags.Select(t => t.Mark)));
+    }
+}

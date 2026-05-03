@@ -1,0 +1,33 @@
+﻿@page "/notfound"
+@rendermode InteractiveServer
+@inject IJSRuntime js
+
+<PageTitle>Сторінку не знайдено</PageTitle>
+
+<section class="ds s-py-90  error-404 not-found page_404">
+    <div class="container">
+        <div class="row">
+            <div class="divider-90 divider-xl-160"></div>
+            <div class="col-12">
+                <header class="page-header text-center">
+                    <img src="images/404-img.png" alt="img">
+                    <div class="divider-55"></div>
+                </header>
+                <div class="page-content">
+                    <p class="text-center color-darkgrey">
+                        <span>Вибачте, але такої сторінки немає.</span>
+                    </p>
+                    <div class="divider-55"></div>
+                    <p class="several-buttons center-buttons">
+                        <a href="/" class="btn btn-maincolor">На головну</a>
+                        <a id="back-btn" href="#" class="btn btn-outline-maincolor">На попередню</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+
+}

@@ -1,0 +1,255 @@
+﻿@page "/topics/{TopicId:int}"
+@page "/topics/{TopicId:int}/{TopicTitle}"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+
+<PageTitle>@TopicTitle</PageTitle>
+
+<section class="page_title ds s-overlay s-parallax s-pt-130 s-pt-xl-150 s-pb-65">
+	<div class="container">
+		<div class="row">
+
+			<div class="col-md-12">
+				<h1>@TopicTitle</h1>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						<a href="/">Початок</a>
+					</li>
+					<li class="breadcrumb-item">
+						<a href="#">Меню</a>
+					</li>
+					<li class="breadcrumb-item active">
+						@TopicTitle
+					</li>
+				</ol>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!--
+<section class="ds s-pt-90 s-pt-xl-155 s-pb-30 s-pb-xl-85">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="row justify-content-center">
+					<div class="col-md-10 col-xl-8">
+						<div class="filters gallery-filters text-lg-right">
+							<a href="#" data-filter="*" class="active selected">All</a>
+							<a href="#" data-filter=".astrology">Astrology</a>
+							<a href="#" data-filter=".magic">Magic</a>
+							<a href="#" data-filter=".taro">Taro</a>
+							<a href="#" data-filter=".horoscope">Horoscope</a>
+							<a href="#" data-filter=".stone">Stone</a>
+						</div>
+					</div>
+				</div>
+				<div class="row isotope-wrapper masonry-layout c-mb-60" data-filters=".gallery-filters" style="position: relative; height: 1461.5px;">
+					<div class="col-xl-4 col-md-6 magic stone" style="position: absolute; left: 0%; top: 0px;">
+
+						<div class="vertical-item box-shadow bs ds bordered content-padding">
+							<div class="item-media">
+								<img src="images/gallery/08.jpg" alt="img">
+								<div class="media-links">
+									<div class="links-wrap">
+										<a class="link-anchor" title="" href="gallery-single.html"></a>
+									</div>
+								</div>
+							</div>
+							<div class="item-content">
+								<p class="cat-links">
+									<a href="#">Magic</a>,
+									<a href="#">Stone</a>
+								</p>
+								<h6 class="mb-1 mt-0">
+									<a href="gallery-single.html">Lorem ipsum dolor sit</a>
+								</h6>
+							</div>
+						</div>
+
+					</div>
+					<div class="col-xl-4 col-md-6 horoscope astrology" style="position: absolute; left: 33.3333%; top: 0px;">
+						<div class="vertical-item box-shadow bs ds bordered content-padding">
+							<div class="item-media">
+								<img src="images/gallery/09.jpg" alt="img">
+								<div class="media-links">
+									<div class="links-wrap">
+										<a class="link-anchor" title="" href="gallery-single.html"></a>
+									</div>
+								</div>
+							</div>
+							<div class="item-content">
+								<p class="cat-links">
+									<a href="#">Astrology</a>
+									<a href="#">Horoscope</a>
+								</p>
+								<h6 class="mb-1 mt-0">
+									<a href="gallery-single.html">Amet consetetur sadipscing</a>
+								</h6>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4 col-md-6 taro stone horoscope" style="position: absolute; left: 66.6667%; top: 0px;">
+						<div class="vertical-item box-shadow bs ds bordered content-padding">
+							<div class="item-media">
+								<img src="images/gallery/10.jpg" alt="img">
+								<div class="media-links">
+									<div class="links-wrap">
+										<a class="link-anchor" title="" href="gallery-single.html"></a>
+									</div>
+								</div>
+							</div>
+							<div class="item-content">
+								<p class="cat-links">
+									<a href="#">Taro</a>
+									<a href="#">Stone</a>
+									<a href="#">Horoscope</a>
+								</p>
+								<h6 class="mb-1 mt-0">
+									<a href="gallery-single.html">Elitr sed diam nonumy</a>
+								</h6>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4 col-md-6 magic taro" style="position: absolute; left: 0%; top: 481.5px;">
+						<div class="vertical-item box-shadow bs ds bordered content-padding">
+							<div class="item-media">
+								<img src="images/gallery/11.jpg" alt="img">
+								<div class="media-links">
+									<div class="links-wrap">
+										<a class="link-anchor" title="" href="gallery-single.html"></a>
+									</div>
+								</div>
+							</div>
+							<div class="item-content">
+								<p class="cat-links">
+									<a href="#">Taro</a>
+									<a href="#">Magic</a>
+								</p>
+								<h6 class="mb-1 mt-0">
+									<a href="gallery-single.html">Tempor invidunt ut</a>
+								</h6>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4 col-md-6 horoscope astrology" style="position: absolute; left: 33.3333%; top: 481.5px;">
+						<div class="vertical-item box-shadow bs ds bordered content-padding">
+							<div class="item-media">
+								<img src="images/gallery/12.jpg" alt="img">
+								<div class="media-links">
+									<div class="links-wrap">
+										<a class="link-anchor" title="" href="gallery-single.html"></a>
+									</div>
+								</div>
+							</div>
+							<div class="item-content">
+								<p class="cat-links">
+									<a href="#">Horoscope</a>
+									<a href="#">Astrology</a>
+								</p>
+								<h6 class="mb-1 mt-0">
+									<a href="gallery-single.html">Labore et dolore magna</a>
+								</h6>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4 col-md-6 taro stone astrology" style="position: absolute; left: 66.6667%; top: 481.5px;">
+						<div class="vertical-item box-shadow bs ds bordered content-padding">
+							<div class="item-media">
+								<img src="images/gallery/13.jpg" alt="img">
+								<div class="media-links">
+									<div class="links-wrap">
+										<a class="link-anchor" title="" href="gallery-single.html"></a>
+									</div>
+								</div>
+							</div>
+							<div class="item-content">
+								<p class="cat-links">
+									<a href="#">Taro</a>
+									<a href="#">Stone</a>
+									<a href="#">Astrology</a>
+								</p>
+								<h6 class="mb-1 mt-0">
+									<a href="gallery-single.html">Aliquyam erat sed diam</a>
+								</h6>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4 col-md-6 magic stone horoscope" style="position: absolute; left: 0%; top: 963px;">
+						<div class="vertical-item box-shadow bs ds bordered content-padding">
+							<div class="item-media">
+								<img src="images/gallery/14.jpg" alt="img">
+								<div class="media-links">
+									<div class="links-wrap">
+										<a class="link-anchor" title="" href="gallery-single.html"></a>
+									</div>
+								</div>
+							</div>
+							<div class="item-content">
+								<p class="cat-links">
+									<a href="#">Horoscope</a>
+									<a href="#">Stone</a>
+									<a href="#">Magic</a>
+								</p>
+								<h6 class="mb-1 mt-0">
+									<a href="gallery-single.html">Voluptua vero</a>
+								</h6>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4 col-md-6 magic taro astrology" style="position: absolute; left: 33.3333%; top: 963px;">
+						<div class="vertical-item box-shadow bs ds bordered content-padding">
+							<div class="item-media">
+								<img src="images/gallery/15.jpg" alt="img">
+								<div class="media-links">
+									<div class="links-wrap">
+										<a class="link-anchor" title="" href="gallery-single.html"></a>
+									</div>
+								</div>
+							</div>
+							<div class="item-content">
+								<p class="cat-links">
+									<a href="#">Astrology</a>
+									<a href="#">Taro</a>
+									<a href="#">Magic</a>
+								</p>
+								<h6 class="mb-1 mt-0">
+									<a href="gallery-single.html">Eos et accusam justo duo</a>
+								</h6>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+-->
+
+<section class="ds s-overlay s-parallax section-video s-py-90 s-pt-xl-150 s-pb-xl-200 text-center" style="background-position: 50% -12px;">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Додати нову тему</span>
+				</h3>
+				<div class="line"></div>
+				<p class="text-center fs-20 mt-4">
+					<span>Ви має бути авторизованим користувачем аби мати змогу додавати теми</span>
+				</p>
+				<div class="divider-40 divider-xl-60"></div>
+				<button @onclick="AddNewTopic">Створити тему</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+@code {
+	[Parameter] public int TopicId { get; set; }
+	[Parameter] public string TopicTitle { get; set; }
+
+	private void AddNewTopic()
+	{
+		navigationManager.NavigateTo("/topics/create");
+	}
+}

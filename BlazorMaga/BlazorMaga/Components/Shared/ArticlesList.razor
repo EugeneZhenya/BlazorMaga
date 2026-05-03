@@ -1,0 +1,57 @@
+﻿@inject IJSRuntime js
+
+<!--
+<div>
+    <label>
+        <input type="checkbox" @bind="showDeleteButton">
+        Показати кнопку видалення
+    </label>
+</div>
+-->
+<div class="shortcode-post-grid-tilled-2">
+    <GenericList List="Articles">
+        <ElementTemplate Context="article">
+            <IndividualArticle Article="article" DeleteArticle="DeleteArticle" /> <!-- DisplayButton="showDeleteButton" -->
+        </ElementTemplate>
+    </GenericList>
+</div>
+
+<Confirmation @ref="confirmation" onCancel="onCancel" onConfirm="onConfirm">
+    <div>Ви впевнені, що хочете видалити статтю «@artcleToBeDeleted.Title»?</div>
+</Confirmation>
+
+@code {
+    Confirmation confirmation;
+    [Parameter] public List<Article> Articles { get; set; }
+    // bool showDeleteButton = false;
+
+    Article artcleToBeDeleted;
+    private async Task DeleteArticle(Article article)
+    {
+        // Console.OutputEncoding = System.Text.Encoding.UTF8;
+        // Console.WriteLine($"Deleting {article.Title}");
+        // await js.MyFunction($"Deleting {article.Title}");
+
+        // var confirmed = await js.Confirm($"Ви впевнені, що хочете видалити статтю '{article.Title}'?");
+        // if (confirmed)
+        // {
+        //     Articles.Remove(article);
+        // }
+
+        artcleToBeDeleted = article;
+        confirmation.Show();
+    }
+
+    void onConfirm()
+    {
+        Articles.Remove(artcleToBeDeleted);
+        confirmation.Hide();
+        artcleToBeDeleted = null;
+    }
+
+    void onCancel()
+    {
+        confirmation.Hide();
+        artcleToBeDeleted = null;
+    }
+}

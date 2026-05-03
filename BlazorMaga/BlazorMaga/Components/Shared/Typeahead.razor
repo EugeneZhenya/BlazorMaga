@@ -1,0 +1,104 @@
+﻿@using BlazorMaga.Shared.Entities
+@using System.Linq
+
+
+<div class="input-group" style="padding-top: 10px;">
+
+    <input @bind="SearchText"
+           @bind:event="oninput"
+           autocomplete="off"
+           placeholder="@Placeholder"
+           class="search-field form-control" />
+
+    <span class="input-group-text upload-btn">
+        <a href="/tags/create" target="_blank" title="Додати нове" class="btn btn-outline-maincolor" style="min-width: 70px; max-height: 50px; padding: 15px;">
+            <i class="fa fa-upload" aria-hidden="true"></i>
+        </a>
+    </span>
+</div>
+
+<div class="tagcloud">
+    @if (FilteredTags?.Any() == true)
+    {
+        <ul class="dropdown-menu show">
+            @foreach (var tag in FilteredTags)
+            {
+                <li @onclick="() => AddTag(tag)" class="dropdown-item">
+                    @tag.Mark
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+<div class="widget widget_tag_cloud">
+    <div class="tagcloud">
+        @foreach (var tag in SelectedTags)
+        {
+            <div class="badge"
+                 draggable="true"
+                 @ondragstart="(e) => OnDragStart(tag)"
+                 @ondragover="@(() => HandleDragOver(tag))">
+                @tag.Mark
+                <button type="button" class="btn-close btn-close-white ms-1"
+                        @onclick="() => RemoveTag(tag)" aria-label="Close"></button>
+            </div>
+        }
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public List<Tag> SelectedTags { get; set; } = new();
+    [Parameter] public List<Tag> NotSelectedTags { get; set; } = new();
+    [Parameter] public EventCallback<List<Tag>> OnTagsChanged { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Ключові слова...";
+
+    private string SearchText { get; set; } = string.Empty;
+    private Tag? DraggedTag;
+
+    private IEnumerable<Tag> FilteredTags =>
+        string.IsNullOrWhiteSpace(SearchText)
+            ? Enumerable.Empty<Tag>()
+            : NotSelectedTags.Where(t => t.Mark.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                             .OrderBy(t => !t.Mark.StartsWith(SearchText, StringComparison.OrdinalIgnoreCase))
+                             .ThenBy(t => t.Mark);
+
+    private async Task AddTag(Tag tag)
+    {
+        SelectedTags.Add(tag);
+        NotSelectedTags.Remove(tag);
+        SearchText = string.Empty;
+        await OnTagsChanged.InvokeAsync(SelectedTags);
+    }
+
+    private async Task RemoveTag(Tag tag)
+    {
+        SelectedTags.Remove(tag);
+        NotSelectedTags.Add(tag);
+        await OnTagsChanged.InvokeAsync(SelectedTags);
+    }
+
+    private void OnDragStart(Tag tag)
+    {
+        DraggedTag = tag;
+    }
+
+    private async Task HandleDragOver(Tag targetTag)
+    {
+        if (DraggedTag == null || DraggedTag == targetTag) return;
+
+        int oldIndex = SelectedTags.IndexOf(DraggedTag);
+        int newIndex = SelectedTags.IndexOf(targetTag);
+
+        if (oldIndex >= 0 && newIndex >= 0)
+        {
+            SelectedTags.RemoveAt(oldIndex);
+            SelectedTags.Insert(newIndex, DraggedTag);
+
+            await OnTagsChanged.InvokeAsync(SelectedTags);
+        }
+
+        DraggedTag = null;
+    }
+}

@@ -1,0 +1,74 @@
+﻿@page "/tags"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+
+<PageTitle>Позначки</PageTitle>
+
+<section class="page_title ds s-overlay s-parallax s-pt-130 s-pt-xl-150 s-pb-65">
+	<div class="container">
+		<div class="row">
+
+			<div class="col-md-12">
+				<h1>Позначки</h1>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						<a href="/">Початок</a>
+					</li>
+					<li class="breadcrumb-item active">
+						Позначки
+					</li>
+				</ol>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="ds s-py-90 s-py-xl-150">
+	<div class="container">
+			<div class="widget widget_tag_cloud">
+				<div class="tagcloud">
+					<a href="blog-right.html" class="tag-cloud-link">
+						Astrology
+					</a>
+
+					<a href="blog-right.html" class="tag-cloud-link">
+						Natal Chart
+					</a>
+
+					<a href="blog-right.html" class="tag-cloud-link">
+						Horoscope
+					</a>
+
+					<a href="blog-right.html" class="tag-cloud-link">
+						Magic
+					</a>
+				</div>
+			</div>
+		</div>
+</section>
+
+
+<section class="ds s-overlay s-parallax section-video s-py-90 s-pt-xl-150 s-pb-xl-200 text-center" style="background-position: 50% -12px;">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+					<span>Додати нову позначку</span>
+				</h3>
+				<div class="line"></div>
+				<p class="text-center fs-20 mt-4">
+					<span>Ви має бути авторизованим користувачем аби мати змогу додавати позначки</span>
+				</p>
+				<div class="divider-40 divider-xl-60"></div>
+				<button @onclick="AddNewTag">Створити позначку</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+@code {
+	private void AddNewTag()
+	{
+		navigationManager.NavigateTo("/tags/create");
+	}
+}

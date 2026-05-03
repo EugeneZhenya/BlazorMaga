@@ -1,0 +1,42 @@
+﻿﻿@if (DisplayConfirmation)
+{
+    <div class="modal-backdrop show"></div>
+
+    <div class="modal fade show" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true" style="display: block">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content ds bs box-shadow bordered overflow-visible s-overlay s-mobile-overlay">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        @((MarkupString)(Title))
+                    </h5>
+                    <button @onclick="onCancel" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                @ChildContent
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button @onclick="onCancel" type="button" class="btn btn-outline-maincolor mt-30 d-block">Ні</button>
+                    <button @onclick="onConfirm" type="button" class="btn btn-maincolor mt-30 d-block">Так</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool DisplayConfirmation = false;
+    [Parameter] public string Title { get; set; } = "Підтвердження";
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public EventCallback onConfirm { get; set; }
+    [Parameter] public EventCallback onCancel { get; set; }
+    public void Show() => DisplayConfirmation = true;
+    public void Hide() => DisplayConfirmation = false;
+}

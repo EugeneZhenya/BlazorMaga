@@ -1,0 +1,95 @@
+﻿@inherits LayoutComponentBase
+
+<div id="canvas">
+    <div id="box_wrapper">
+        <div class="header_absolute">
+            <section class="page_topline ds s-py-30">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-xl-6 col-lg-4 col-md-4 text-lg-left text-center">
+                            <a href="/" class="logo">
+                                <img src="images/logo.png" alt="МАГА">
+                                <!-- <span class="logo-text color-darkgrey">МАГА</span> -->
+                            </a>
+                        </div>
+                        <div class="col-xl-6 col-lg-8 col-md-8 some-links text-center text-lg-right d-flex justify-content-center justify-content-md-end align-items-center mt-2 mt-md-0">
+                            <a class="fs-24 links-maincolor-hover font-2" href="tel:+380660000000" style="display: none"><mark>+380 066</mark> 00-00-000</a>
+                            <a href="#" class="btn btn-outline-maincolor btn-medium d-none d-md-block">Запитай в астролога</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <NavMenu />
+        </div>
+        @Body
+        <footer class="page_footer ds ms s-py-90 s-pb-lg-60 s-pt-xl-150 s-pb-xl-120">
+            <div class="container">
+                <div class="row align-center">
+                    <div class="col-xl-5 col-lg-5 text-center text-lg-left animate" data-animation="fadeInUp">
+                        <a href="/" class="logo">
+                            <img src="images/logo.png" alt="МАГА">
+                            <!-- <span class="logo-text color-darkgrey">МАГА</span> -->
+                        </a>
+                        <div class="divider-60 divider-lg-0"></div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 align-self-start text-center text-lg-left animate" data-animation="fadeInUp">
+                        <div class="widget widget_nav_menu">
+                            <h3>Послуги</h3>
+								<ul class="menu">
+									<li class="menu-item">
+										<a href="/posluga1">Натальна карта</a>
+									</li>
+									<li class="menu-item">
+										<a href="/posluga2">Річний гороскоп</a>
+									</li>
+									<li class="menu-item">
+										<a href="/posluga3">Сумісність</a>
+									</li>
+								</ul>
+                        </div>
+                        <div class="divider-60 divider-lg-0"></div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 align-self-start text-center text-lg-left animate" data-animation="fadeInUp">
+							<div class="widget widget_nav_menu">
+								<h3>Консультації</h3>
+								<ul class="menu">
+									<li class="menu-item">
+										<a href="/inDnipro">У Дніпрі</a>
+									</li>
+									<li class="menu-item">
+										<a href="/online">Онлайн</a>
+									</li>
+								</ul>
+							</div>
+							<div class="divider-60 divider-lg-0"></div>
+						</div>
+				    <div class="col-xl-3 col-lg-3 align-self-start text-center text-lg-left animate" data-animation="fadeInUp">
+						<div class="widget widget_text">
+							<h3>Про автора</h3>
+							<p>
+								Мазуркевич Галина - астролог, що дарує знання.
+							</p>
+							<p class="social-icons">
+                                <a href="https://www.facebook.com/groups/3750808215226756" class="fa fa-facebook" title="Facebook" target="_blank"></a>
+                                <!-- <a href="https://twitter.com/" class="fa fa-twitter" title="twitter"></a> -->
+                                <a href="https://www.instagram.com/galyna.astrolog/" class="fa fa-instagram" title="Instagram" target="_blank"></a>
+                                <!-- <a href="https://www.linkedin.com/" class="fa fa-linkedin" title="linkedin"></a> -->
+                                <!-- <a href="https://www.youtube.com/" class="fa fa-youtube-play" title="youtube"></a> -->
+                                <a href="https://t.me/jotish_dnipro" class="fa fa-telegram" title="Telegram" target="_blank"></a>
+						    </p>
+						</div>
+					</div>
+                </div>
+            </div>
+        </footer>
+        <section class="page_copyright ds ms s-py-25 s-bordertop-container">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-12 text-center">
+                        <p>&copy; Авторське право <span class="copyright_year">@DateTime.Now.Year</span> Галина Мазуркевич. Усі права захищено.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

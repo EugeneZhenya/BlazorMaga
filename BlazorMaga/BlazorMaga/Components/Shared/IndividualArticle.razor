@@ -1,0 +1,123 @@
+﻿<!--
+    <div>
+        <p>Назва: <b>@((MarkupString)(Article.Title))</b></p>
+        <p>Створено: <b>@((MarkupString)(@Article.Created.ToString("dd MMM yyyy")))</b></p>
+        @if (DisplayButton)
+        {
+            <div>
+                <button @onclick="@(() => DeleteArticle.InvokeAsync(Article))">Видалити</button>
+            </div>
+        }
+    </div>
+-->
+
+@if (Article.isFirst)
+{
+	<article class="vertical-item text-center text-md-left box-shadow content-padding post type-post status-publish format-standard has-post-thumbnail bg-darkblue">
+		<div class="item-media post-thumbnail">
+			<img src="@Article.Picture" alt="@((MarkupString)(Article.Title))">
+			<div class="media-links">
+				<a class="abs-link" href="@articleURL"></a>
+			</div>
+		</div>
+		<div class="item-content">
+			<span class="cat-links">
+				<span class="screen-reader-text">Категорії</span>
+				<a href="blog-right.html" rel="category tag">
+					Астрологія
+				</a>
+			</span>
+			<header class="entry-header">
+				<h4 class="entry-title mb-3 links-maincolor">
+					<a class="fs-30" href="@articleURL" rel="bookmark">
+						@((MarkupString)(Article.Title))
+					</a>
+				</h4>
+			</header>
+			<div class="entry-content mt-20">
+				<p>
+					Короткий опис першої статті.
+				</p>
+			</div>
+			<div class="entry-footer flex-row mt-4">
+				<div class="entry-meta">
+					<span>
+						<a href="blog-single-right.html" rel="bookmark">
+							<time class="entry-date published updated" datetime="@Article.Created.ToString()">@((MarkupString)(@Article.Created.ToString("dd MMM yyyy")))</time>
+						</a>
+					</span>
+				</div>
+				<div class="mt-0 ml-auto">
+					<a href="/articles/edit/@Article.Id" class="mt-30 font-2"><i class="fa fa-pencil-square-o color-main ml-2" aria-hidden="true"></i></a>
+					<a class="mt-30 font-2" @onclick="@(() => DeleteArticle.InvokeAsync(Article))" style="cursor: pointer"><i class="fa fa-trash-o color-main ml-2" aria-hidden="true"></i>&nbsp;&nbsp;</a>
+					<a href="@articleURL" class="mt-30 font-2">Читати <i class="fa fa-caret-right color-main ml-2"></i></a>
+				</div>
+			</div>
+		</div>
+	</article>
+}
+else
+{
+	<article class="side-item text-center text-md-left box-shadow content-padding post type-post status-publish format-standard has-post-thumbnail bg-darkblue">
+		<div class="row">
+			<div class="col-lg-6 d-lg-none d-xl-block d-md-block">
+				<div class="item-media d-block cover-image mb-0 post-thumbnail" style="background-image: url('@Article.Picture');">
+					<img class="d-lg-none" src="@Article.Picture" alt="@((MarkupString)(Article.Title))">
+					<div class="media-links">
+						<a class="abs-link" href="@articleURL"></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-6 col-12">
+				<div class="item-content">
+					<span class="cat-links">
+						<span class="screen-reader-text">Категорії</span>
+						<a href="#" rel="category tag">
+							Астрологія
+						</a>
+					</span>
+					<header class="entry-header">
+						<h4 class="entry-title mb-3 links-maincolor">
+							<a class="fs-30" href="@articleURL" rel="bookmark">
+								@((MarkupString)(Article.Title))
+							</a>
+						</h4>
+					</header>
+
+					<div class="entry-content mt-20">
+						<p>
+							Тут має бути короткий опис статті.
+						</p>
+					</div>
+					<div class="entry-footer flex-row mt-4">
+						<div class="entry-meta">
+							<span>
+								<a href="blog-single-right.html" rel="bookmark">
+									<time class="entry-date published updated" datetime="@Article.Created.ToString()">@((MarkupString)(@Article.Created.ToString("dd MMM yyyy")))</time>
+								</a>
+							</span>
+						</div>
+						<div class="mt-0 ml-auto">
+							<a href="/articles/edit/@Article.Id" class="mt-30 font-2"><i class="fa fa-pencil-square-o color-main ml-2" aria-hidden="true"></i></a>
+							<a class="mt-30 font-2" @onclick="@(() => DeleteArticle.InvokeAsync(Article))" style="cursor: pointer"><i class="fa fa-trash-o color-main ml-2" aria-hidden="true"></i>&nbsp;&nbsp;</a>
+							<a href="@articleURL" class="mt-30 font-2">Читати <i class="fa fa-caret-right color-main ml-2"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+}
+
+@code {
+	[Parameter] public Article Article { get; set; }
+	[Parameter] public bool DisplayButton { get; set; } = false;
+	[Parameter] public EventCallback<Article> DeleteArticle { get; set; }
+
+	private string articleURL = string.Empty;
+
+	protected override void OnInitialized()
+	{
+		articleURL = $"article/{Article.Id}/{StringUtilities.Translit(Article.Title)}";
+	}
+}

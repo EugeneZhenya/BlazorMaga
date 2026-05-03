@@ -1,0 +1,38 @@
+﻿@typeparam TItem
+
+@if (List == null)
+{
+    @if (NullTemplate != null)
+    {
+        @NullTemplate
+    }
+    else
+    {
+        <img src="/Spinner.gif" alt="Зачекайте..." />
+    }
+}
+else if (List.Count == 0)
+{
+    @if (EmptyTemplate != null)
+    {
+        @EmptyTemplate
+    }
+    else
+    {
+        <p>Жодного запису не знайдено.</p>
+    }
+}
+else
+{
+    @foreach (var element in List)
+    {
+        @ElementTemplate(element)
+    }
+}
+
+@code {
+    [Parameter] public RenderFragment NullTemplate { get; set; }
+    [Parameter] public RenderFragment EmptyTemplate { get; set; }
+    [Parameter] public RenderFragment<TItem> ElementTemplate { get; set; }
+    [Parameter] public List<TItem> List { get; set; }
+}

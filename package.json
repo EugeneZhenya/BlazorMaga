@@ -1,0 +1,16 @@
+{
+  "name": "blazormaga",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "quill": "^2.0.3",
+    "quill-table-up": "^3.5.1"
+  }
+}

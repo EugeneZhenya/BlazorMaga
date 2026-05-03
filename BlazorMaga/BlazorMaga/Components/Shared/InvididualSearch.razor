@@ -1,0 +1,34 @@
+﻿<div class="col-xl-4 col-lg-6">
+	<div class="vertical-item bg-darkblue text-center service-layout-1 box-shadow  content-padding">
+		<div class="item-media">
+			<img src="@Article.Picture" alt="@((MarkupString)(Article.Title))">
+			<div class="media-links">
+				<a class="abs-link" title="@((MarkupString)(Article.Title))" href="@articleURL"></a>
+			</div>
+		</div>
+		<div class="item-content">
+			<h5 class="mt-0 links-maincolor">
+				<a href="@articleURL">@((MarkupString)(Article.Title))</a>
+			</h5>
+			<p>
+				Тут має бути короткий опис статті.
+			</p>
+			<a href="/articles/edit/@Article.Id" class="mt-30 font-2"><i class="fa fa-pencil-square-o color-main ml-2" aria-hidden="true"></i></a>
+			<a class="mt-30 font-2" @onclick="@(() => DeleteArticle.InvokeAsync(Article))" style="cursor: pointer"><i class="fa fa-trash-o color-main ml-2" aria-hidden="true"></i>&nbsp;&nbsp;</a>
+			<a href="@articleURL" class="mt-30 font-2">Читати <i class="fa fa-caret-right color-main ml-2"></i></a>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter] public Article Article { get; set; }
+	[Parameter] public bool DisplayButton { get; set; } = false;
+	[Parameter] public EventCallback<Article> DeleteArticle { get; set; }
+
+	private string articleURL = string.Empty;
+
+	protected override void OnInitialized()
+	{
+		articleURL = $"article/{Article.Id}/{StringUtilities.Translit(Article.Title)}";
+	}
+}

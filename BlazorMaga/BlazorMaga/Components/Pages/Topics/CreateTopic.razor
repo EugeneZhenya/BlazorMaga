@@ -1,0 +1,35 @@
+﻿@page "/topics/create"
+@rendermode InteractiveServer
+
+<PageTitle>Додавання теми</PageTitle>
+
+<section class="ds s-py-90 s-py-xl-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Додавання теми</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>Заповність форму аби створити нову тему.</span>
+                </p>
+                <div class="divider-50 divider-xl-60"></div>
+            </div>
+            <div class="col-12">
+                <TopicForm Topic="Topic" OnValidSubmit="Create" />
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    Topic Topic = new Topic();
+
+    private void Create()
+    {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.WriteLine($"Create topic: {Topic.Name}");
+        Console.WriteLine($"Content: {Topic.HtmlContent}");
+    }
+}

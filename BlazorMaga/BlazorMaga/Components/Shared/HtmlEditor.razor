@@ -1,0 +1,62 @@
+﻿<div id="editor"></div>
+
+<FileGallery @ref="Gallery" Mode="currentGalleryMode" OnSelect="HandleFileSelect" />
+
+<!--
+<div class="preview mt-3 border p-3">
+    @((MarkupString)Content)
+</div>
+-->
+
+@code {
+    [Parameter] public string Content { get; set; } = "";
+    [Parameter] public EventCallback<string> ContentChanged { get; set; }
+
+    [Inject] IJSRuntime JS { get; set; }
+
+    private DotNetObjectReference<HtmlEditor>? objRef;
+    private FileGallery Gallery;
+
+    private FileGallery.GalleryMode currentGalleryMode;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("initQuillWithTableUp", "#editor", objRef);
+
+            if (!string.IsNullOrEmpty(Content))
+            {
+                await JS.InvokeVoidAsync("setQuillContent", Content);
+            }
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnContentChanged(string html)
+    {
+        Content = html;
+        await ContentChanged.InvokeAsync(Content);
+    }
+
+    [JSInvokable("ShowGalleryFromQuill")]
+    public void ShowGalleryFromQuill(string type)
+    {
+        var mode = type.ToLower() switch
+        {
+            "image" => FileGallery.GalleryMode.Images,
+            "video" => FileGallery.GalleryMode.Videos,
+            _ => FileGallery.GalleryMode.All
+        };
+
+        Gallery.Show(mode);
+    }
+
+    private async Task HandleFileSelect(string url) => await JS.InvokeVoidAsync("insertMediaToQuill", url);
+
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+}

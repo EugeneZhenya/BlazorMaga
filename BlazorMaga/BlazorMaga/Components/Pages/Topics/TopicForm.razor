@@ -1,0 +1,68 @@
+﻿<EditForm class="form-registration c-mb-20 c-gutter-20" Model="Topic" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <InputText type="text" name="Name" class="form-control" required placeholder="Тема" aria-required="true" @bind-Value="Topic.Name" />
+            </div>
+            <div class="input-group" style="padding-top: 10px;">
+                <InputText type="text" name="Picture" class="search-field form-control" required placeholder="Постер" @bind-Value="Topic.Picture" @onfocus="OpenGallery" />
+
+                @if (!string.IsNullOrEmpty(Topic.Picture))
+                {
+                    if (IsImage(Topic.Picture))
+                    {
+                        <span class="input-group-text" style="background-color: transparent; border: none;">
+                            <img src="@Topic.Picture" alt="@Path.GetFileName(Topic.Picture)" style="max-height:40px; max-width:60px;" />
+                        </span>
+                    }
+                    else if (IsVideo(Topic.Picture))
+                    {
+                        <span class="input-group-text" style="background-color: transparent; border: none;">
+                            <i class="fa fa-video-camera"></i>
+                        </span>
+                    }
+
+                }
+
+                <span class="input-group-text upload-btn">
+                    <a href="/upload" target="_blank" title="Завантажити нове" class="btn btn-outline-maincolor" style="min-width: 70px; max-height: 50px; padding: 15px;">
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                    </a>
+                </span>
+            </div>
+
+            <FileGallery @ref="Gallery" OnSelect="SelectFile" />
+        </div>
+
+        <div class="col-12">
+            <HtmlEditor @bind-Content="Topic.HtmlContent" />
+            <!--
+            <InputMarkdown @bind-Value="Topic.HtmlContent" Label="Вміст" For="@(() => Topic.HtmlContent)" />
+            -->
+        </div>
+    </div>
+    <button type="submit" class="btn btn-maincolor mt-30 d-block" style="margin-top: 50px;">Зберегти</button>
+</EditForm>
+
+@code {
+    private HtmlEditor? Editor;
+
+    [Parameter] public Topic Topic { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private FileGallery? Gallery;
+
+    private void OpenGallery(FocusEventArgs e) => Gallery?.Show(FileGallery.GalleryMode.All);
+
+    private void SelectFile(string url)
+    {
+        Topic.Picture = url;
+    }
+
+    private bool IsImage(string path) =>
+        new[] { ".jpg", ".jpeg", ".png", ".gif" }.Contains(Path.GetExtension(path).ToLower());
+
+    private bool IsVideo(string path) =>
+        new[] { ".mp4", ".webm", ".ogg" }.Contains(Path.GetExtension(path).ToLower());
+}

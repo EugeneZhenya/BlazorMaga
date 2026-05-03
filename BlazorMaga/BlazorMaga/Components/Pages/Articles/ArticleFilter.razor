@@ -1,0 +1,125 @@
+﻿@page "/articles/search"
+@rendermode InteractiveServer
+@inject IRepository repository
+
+<PageTitle>Пошук статей</PageTitle>
+
+<section class="page_title ds s-overlay s-parallax s-pt-130 s-pt-xl-150 s-pb-65" style="background-position: 50% 1px;">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Пошук</h1>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						<a href="/">Початок</a>
+					</li>
+					<!-- color: #ca416e !important; -->
+					<li class="breadcrumb-item">
+						<a href="/articles/search" style="@(string.IsNullOrWhiteSpace(searchQuery) ? "color: #ca416e !important;" : "")">Пошук</a>
+					</li>
+					@if (!string.IsNullOrWhiteSpace(searchQuery))
+					{
+						<li class="breadcrumb-item active">
+							@searchQuery
+						</li>
+					}
+				</ol>
+			</div>
+			<div class="col-md-12">
+				<div class="widget widget_search" style="margin-top: 2.5em;">
+					<div role="search" class="search-form">
+						<label for="searchQuery">
+							<span class="screen-reader-text">Пошук за фразою чи словом:</span>
+						</label>
+						<input type="search" id="searchQuery" class="search-field form-control" placeholder="Шукати"
+							   @bind-value:event="oninput" @bind-value="searchText" @onkeypress="@((KeyboardEventArgs e) => SearchKeyPress(e))" name="search">
+						<button type="button" class="search-submit" @onclick="SearchForArticles">
+							<span class="screen-reader-text">Шукати</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@if (Articles != null)
+{
+	<section class="ds s-py-90 s-py-xl-150">
+		<div class="container">
+			<div class="row">
+				<div class="col-12 text-center">
+					<h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+						<span>Результати пошуку за запитом</span> «@searchQuery»
+					</h3>
+					<div class="line"></div>
+
+					<p class="text-center fs-20 mt-4">
+						<span>Знайдено @StringUtilities.FormatArticles(Articles.Count) за вашим запитом.</span>
+					</p>
+
+					<div class="divider-50 divider-xl-60"></div>
+
+					<div class="row">
+						<GenericList List="Articles">
+							<ElementTemplate Context="article">
+								<InvididualSearch Article="article" DeleteArticle="DeleteArticle" />
+							</ElementTemplate>
+						</GenericList>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</section>
+}
+
+<Confirmation @ref="confirmation" onCancel="onCancel" onConfirm="onConfirm">
+	<div>Ви впевнені, що хочете видалити статтю «@artcleToBeDeleted.Title»?</div>
+</Confirmation>
+
+@code {
+	Confirmation confirmation;
+	private List<Article> Articles;
+    string searchText = string.Empty;
+	string searchQuery = string.Empty;
+
+	private void SearchForArticles()
+	{
+		if (!string.IsNullOrWhiteSpace(searchQuery))
+		{
+			var allArticles = repository.GetALLArticles();
+			Articles = allArticles.Where(x => x.Content.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+			Console.WriteLine($"Search query: {searchQuery}");
+        }
+    }
+
+	private void SearchKeyPress(KeyboardEventArgs e)
+	{
+		if (e.Key == "Enter")
+		{
+            searchQuery = searchText;
+			SearchForArticles();
+		}
+	}
+
+	Article artcleToBeDeleted;
+	private async Task DeleteArticle(Article article)
+	{
+		artcleToBeDeleted = article;
+		confirmation.Show();
+	}
+
+	void onConfirm()
+	{
+		Articles.Remove(artcleToBeDeleted);
+		confirmation.Hide();
+		artcleToBeDeleted = null;
+	}
+
+	void onCancel()
+	{
+		confirmation.Hide();
+		artcleToBeDeleted = null;
+	}
+}

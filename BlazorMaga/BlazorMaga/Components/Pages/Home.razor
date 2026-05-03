@@ -1,0 +1,57 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject IRepository repository
+@inject NavigationManager navigationManager
+
+<PageTitle>Джйотіш - вчення всевідання</PageTitle>
+
+<section class="ds s-py-90 s-py-xl-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Останні статті</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>Вивчайте Джйотіш через наші статті<br>Джйотіш - вчення всевідання</span>
+                </p>
+                <div class="divider-50 divider-xl-60"></div>
+                <ArticlesList Articles="articles" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ds s-overlay s-parallax section-video s-py-90 s-pt-xl-150 s-pb-xl-200 text-center" style="background-position: 50% -12px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Додати нову статтю</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>Ви має бути авторизованим користувачем аби мати змогу додавати статті</span>
+                </p>
+                <div class="divider-40 divider-xl-60"></div>
+                <button @onclick="AddNewArticle">Створити статтю</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private List<Article> articles;
+    protected async override Task OnInitializedAsync()
+    {
+        // await Task.Delay(2000); // Імітація завантаження даних
+        articles = repository.GetArticles();
+    }
+
+    private void AddNewArticle()
+    {
+        // articles.Add(new Article() {Title = $"New Article {articles.Count + 1}", Created = DateTime.Now});
+        navigationManager.NavigateTo("/articles/create");
+    }
+}

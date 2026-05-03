@@ -1,0 +1,35 @@
+﻿@page "/tags/create"
+@rendermode InteractiveServer
+
+<PageTitle>Додавання позначки</PageTitle>
+
+<section class="ds s-py-90 s-py-xl-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Додавання позначки</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>Заповність форму аби створити нову позначку.</span>
+                </p>
+                <div class="divider-50 divider-xl-60"></div>
+            </div>
+            <div class="col-12">
+                <TagForm Tag="tag" OnValidSubmit="Create" />
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private Tag tag = new Tag();
+
+    private void Create()
+    {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.WriteLine("Create method");
+        Console.WriteLine(tag.Mark);
+    }
+}

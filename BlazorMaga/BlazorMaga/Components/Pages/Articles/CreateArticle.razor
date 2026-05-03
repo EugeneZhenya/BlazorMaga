@@ -1,0 +1,82 @@
+﻿@page "/articles/create"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+
+@using System.Text.Json;
+@using System.Text.Encodings.Web;
+
+<PageTitle>Додавання статті</PageTitle>
+
+<section class="ds s-py-90 s-py-xl-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Додавання статті</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>Заповність форму аби створити нову статтю.</span>
+                </p>
+                <div class="divider-50 divider-xl-60"></div>
+            </div>
+            <div class="col-12">
+                <ArticleForm Article="Article" OnValidSubmit="SaveArticle" NotSelectedTags="NotSelectedTags" Menus="AllMenus" Topics="AllTopics" />
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private Article Article = new Article() { Created = DateTime.Now };
+
+    private List<Tag> NotSelectedTags = new List<Tag>() {
+        new Tag { Id = 1, Mark = "Джйотіш" },
+        new Tag { Id = 2, Mark = "Сонце" },
+        new Tag { Id = 3, Mark = "Лев" },
+        new Tag { Id = 4, Mark = "Овен" },
+    };
+
+    private List<Menu> AllMenus = new List<Menu>() {
+        new Menu { Id = 1, Name = "Філософія" },
+        new Menu { Id = 2, Name = "Час" },
+        new Menu { Id = 3, Name = "Основи" },
+        new Menu { Id = 4, Name = "Карти" },
+        new Menu { Id = 5, Name = "Прогноз" },
+        new Menu { Id = 6, Name = "Практика" },
+    };
+
+    private List<Topic> AllTopics = new List<Topic>() {
+        new Topic { Id = 1, Name = "Філософська тема 1", MenuId = 1 },
+        new Topic { Id = 2, Name = "Філософська тема 2", MenuId = 1 },
+        new Topic { Id = 3, Name = "Часова тема 1", MenuId = 2 },
+        new Topic { Id = 4, Name = "Часова тема 2", MenuId = 2 },
+        new Topic { Id = 4, Name = "Часова тема 3", MenuId = 2 },
+        new Topic { Id = 5, Name = "Основна тема 1", MenuId = 3 },
+        new Topic { Id = 6, Name = "Основна тема 2", MenuId = 3 },
+        new Topic { Id = 7, Name = "Карткова тема 1", MenuId = 4 },
+        new Topic { Id = 8, Name = "Карткова тема 2", MenuId = 4 },
+        new Topic { Id = 9, Name = "Карткова тема 3", MenuId = 4 },
+        new Topic { Id = 10, Name = "Прогнозова тема 1", MenuId = 5 },
+        new Topic { Id = 11, Name = "Прогнозова тема 2", MenuId = 5 },
+        new Topic { Id = 12, Name = "Практична тема 1", MenuId = 6 },
+        new Topic { Id = 13, Name = "Практична тема 2", MenuId = 6 },
+        new Topic { Id = 14, Name = "Практична тема 3", MenuId = 6 },
+    };
+
+    private void SaveArticle()
+    {
+        // Логіка збереження статті
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.WriteLine(navigationManager.Uri);
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            // Дозволяє відображати кирилицю як текст, а не коди
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+        Console.WriteLine(JsonSerializer.Serialize(Article, options));
+        // navigationManager.NavigateTo("article");
+    }
+}

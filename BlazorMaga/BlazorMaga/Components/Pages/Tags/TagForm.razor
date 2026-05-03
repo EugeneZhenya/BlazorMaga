@@ -1,0 +1,16 @@
+﻿<EditForm class="form-registration c-mb-20 c-gutter-20" Model="Tag" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <InputText type="text" name="Name" class="form-control" required placeholder="@((MarkupString)("Позначка"))" aria-required="true" @bind-Value="Tag.Mark" />
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-maincolor mt-30 d-block">Зберегти</button>
+</EditForm>
+
+@code {
+    [Parameter] public Tag Tag { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}

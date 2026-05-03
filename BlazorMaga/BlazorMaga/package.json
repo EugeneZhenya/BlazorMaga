@@ -1,0 +1,20 @@
+{
+  "name": "blazormaga",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "katex": "^0.16.45",
+    "quill": "^2.0.3",
+    "quill-table-up": "^3.5.1"
+  },
+  "devDependencies": {
+    "vite": "^8.0.8"
+  }
+}

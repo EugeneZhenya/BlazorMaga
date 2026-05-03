@@ -1,0 +1,23 @@
+{
+  "version": "3.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "twitter-bootstrap@4.1.2",
+      "destination": "wwwroot/lib/twitter-bootstrap/"
+    },
+    {
+      "library": "jquery@3.3.1",
+      "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "quill@2.0.2",
+      "destination": "wwwroot/lib/quill/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "quill-table-up@3.5.1",
+      "destination": "wwwroot/lib/quill-table-up/"
+    }
+  ]
+}

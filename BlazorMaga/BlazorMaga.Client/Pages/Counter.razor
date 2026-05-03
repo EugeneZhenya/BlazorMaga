@@ -1,0 +1,41 @@
+﻿@page "/counter"
+@rendermode InteractiveAuto
+@inject IJSRuntime js
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me!</button>
+<button class="btn btn-primary" @onclick="IncrementCountJavaScript">JavaScript</button>
+
+<input type="number" @bind="currentCount" />
+
+<p><input @bind="Name" /> You typed: @Name</p>
+
+@code {
+    private int currentCount = 0;
+    private static int currentCountStatic = 0;
+    private string Name = "Blazor";
+
+    [JSInvokable]
+    public async Task IncrementCount()
+    {
+        currentCount++;
+        currentCountStatic++;
+        await js.InvokeVoidAsync("dotnetStaticInvocation");
+    }
+
+    private async Task IncrementCountJavaScript()
+    {
+        await js.InvokeVoidAsync("dotnetInstanceInvocation", DotNetObjectReference.Create(this));
+    }
+
+    [JSInvokable]
+    public static Task<int> GetCountAsync()
+    {
+        return Task.FromResult(currentCountStatic);
+    }
+}

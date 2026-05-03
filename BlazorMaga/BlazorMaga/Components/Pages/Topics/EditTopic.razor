@@ -1,0 +1,50 @@
+﻿@page "/topics/edit/{TopicId:int}"
+@rendermode InteractiveServer
+
+<PageTitle>Редагування теми</PageTitle>
+
+<section class="ds s-py-90 s-py-xl-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Редагування теми</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>Внесіть зміни до форми аби відредагувати цю тему.</span>
+                </p>
+                <div class="divider-50 divider-xl-60"></div>
+            </div>
+            <div class="col-12">
+                @if (topic != null)
+                {
+                    <TopicForm Topic="topic" OnValidSubmit="Edit" />
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter] public int TopicId { get; set; }
+    Topic topic;
+
+    protected override void OnInitialized()
+    {
+        topic = new Topic
+        {
+            Id = TopicId,
+            Name = $"Тема {TopicId}",
+            Picture = "images/01.jpg"
+        };
+    }
+
+    private void Edit()
+    {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.WriteLine("Edit method");
+        Console.WriteLine($"Id = {topic.Id}");
+        Console.WriteLine($"Name = {topic.Name}");
+    }
+}

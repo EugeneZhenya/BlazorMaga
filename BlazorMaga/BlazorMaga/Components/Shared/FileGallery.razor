@@ -1,0 +1,98 @@
+﻿<div>
+    @if (IsVisible)
+    {
+        <div class="modal fade show modal-dialog-centered" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content ds bs box-shadow bordered overflow-visible s-overlay s-mobile-overlay" style="min-width: 500px;">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            @if (Mode == GalleryMode.Images)
+                            {
+                                <span>Галерея зображень</span>
+                            }
+                            else if (Mode == GalleryMode.Videos)
+                            {
+
+                                <span>Галерея відео</span>
+                            }
+                            else
+                            {
+
+                                <span>Галерея файлів</span>
+                            }
+                        </h5>
+                        <button type="button" class="close" @onclick="Hide">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-gallery d-flex flex-wrap gap-3">
+                            @foreach (var file in FilteredFiles)
+                            {
+                                var url = $"/uploads/{Path.GetFileName(file)}";
+                                if (IsImage(file))
+                                {
+                                    <img src="@url" width="120" height="90" class="img-thumbnail"
+                                         style="cursor:pointer; margin:10px;"
+                                         @onclick="() => Select(url)" />
+                                }
+                                else if (IsVideo(file))
+                                {
+                                    <video src="@url" width="160" height="120" controls class="border"
+                                           style="cursor:pointer; margin:10px;"
+                                           @onclick="() => Select(url)"></video>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @onclick="Hide">Закрити</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    public enum GalleryMode { All, Images, Videos }
+
+    [Parameter] public EventCallback<string> OnSelect { get; set; }
+    [Parameter] public GalleryMode Mode { get; set; } = GalleryMode.All;
+
+    private List<string> Files = new();
+    private bool IsVisible;
+
+    private IEnumerable<string> FilteredFiles => Mode switch
+    {
+        GalleryMode.Images => Files.Where(IsImage),
+        GalleryMode.Videos => Files.Where(IsVideo),
+        _ => Files.Where(f => IsImage(f) || IsVideo(f))
+    };
+
+    public void Show(GalleryMode mode)
+    {
+        Mode = mode;
+        var uploadsPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "uploads");
+        if (Directory.Exists(uploadsPath))
+        {
+            Files = Directory.GetFiles(uploadsPath).ToList();
+        }
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    private void Hide() => IsVisible = false;
+
+    private async Task Select(string url)
+    {
+        IsVisible = false;
+        await OnSelect.InvokeAsync(url);
+    }
+
+    private bool IsImage(string path) =>
+        new[] { ".jpg", ".jpeg", ".png", ".gif" }.Contains(Path.GetExtension(path).ToLower());
+
+    private bool IsVideo(string path) =>
+        new[] { ".mp4", ".webm", ".ogg" }.Contains(Path.GetExtension(path).ToLower());
+}
