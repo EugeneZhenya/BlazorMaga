@@ -1,4 +1,5 @@
 ﻿@page "/Error"
+@page "/Error/{Message}"
 @rendermode InteractiveServer
 @using System.Diagnostics
 
@@ -23,7 +24,14 @@
                     </p>
                 }
             </div>
-            <div class="col-12 text-center" style="margin-top: 10em;">
+        </div>
+    </div>
+</section>
+
+<section class="ds s-overlay s-parallax section-video s-py-90 s-pt-xl-150 s-pb-xl-200 text-center" style="background-position: 50% -12px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
                 <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
                     <span>Режим розробника</span>
                 </h3>
@@ -39,16 +47,21 @@
                     Це може призвести до відображення конфіденційної інформації з винятків кінцевим користувачам.
                     Для локального налагодження увімкніть середовище розробника, встановивши змінну середовища <strong>ASPNETCORE_ENVIRONMENT</strong> у значення <strong>Development</strong>
                     та перезапустіть застосунок.
-
                 </p>
+                @if (!string.IsNullOrEmpty(Message))
+                {
+                    <p>
+                        <strong>Деталі:</strong> @Message
+                    </p>
+                }
             </div>
         </div>
     </div>
 </section>
 
 @code{
-    [CascadingParameter]
-    private HttpContext? HttpContext { get; set; }
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+    [Parameter] public string? Message { get; set; }
 
     private string? RequestId { get; set; }
     private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);

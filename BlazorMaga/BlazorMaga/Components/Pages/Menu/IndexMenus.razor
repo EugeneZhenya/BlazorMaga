@@ -1,21 +1,23 @@
 ﻿@page "/menu/{MenuId:int}"
 @page "/menu/{MenuId:int}/{MenuTitle}"
 @rendermode InteractiveServer
+@inject IMenuRepository menuRepository
+@inject NavigationManager navigationManager
 
-<PageTitle>@MenuTitle</PageTitle>
+<PageTitle>@((MarkupString)MenuName)</PageTitle>
 
 <section class="page_title ds s-overlay s-parallax s-pt-130 s-pt-xl-150 s-pb-65">
 	<div class="container">
 		<div class="row">
 
 			<div class="col-md-12">
-				<h1>@MenuTitle</h1>
+				<h1>@((MarkupString)MenuName)</h1>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item">
 						<a href="/">Початок</a>
 					</li>
 					<li class="breadcrumb-item active">
-						@MenuTitle
+						@((MarkupString)MenuName)
 					</li>
 				</ol>
 			</div>
@@ -27,4 +29,19 @@
 @code {
 	[Parameter] public int MenuId { get; set; }
 	[Parameter] public string MenuTitle { get; set; }
+    private string MenuName = string.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var menuItem = await menuRepository.GetMenuByIdAsync(MenuId);
+			MenuName = menuItem.Name;
+		}
+		catch (Exception ex)
+		{
+
+			navigationManager.NavigateTo($"/Error/{Uri.EscapeDataString(ex.Message)}");
+		}
+	}
 }

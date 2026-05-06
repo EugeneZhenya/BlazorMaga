@@ -19,7 +19,6 @@ namespace BlazorMaga.Shared.Entities
         public string Description { get; set; }
         [Required]
         public string Picture { get; set; }
-        public string HtmlContent { get; set; }
         public List<Article> Articles { get; set; }
         public Menu Menu { get; set; }
     }

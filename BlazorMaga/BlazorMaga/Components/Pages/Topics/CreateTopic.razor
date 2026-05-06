@@ -1,5 +1,8 @@
 ﻿@page "/topics/create"
 @rendermode InteractiveServer
+@inject IMenuRepository menuRepository
+@inject ITopicRepository topicRepository
+@inject NavigationManager navigationManager
 
 <PageTitle>Додавання теми</PageTitle>
 
@@ -17,19 +20,40 @@
                 <div class="divider-50 divider-xl-60"></div>
             </div>
             <div class="col-12">
-                <TopicForm Topic="Topic" OnValidSubmit="Create" />
+                <TopicForm Topic="topic" Menus="Menus" OnValidSubmit="Create" />
             </div>
         </div>
     </div>
 </section>
 
 @code {
-    Topic Topic = new Topic();
+    Topic topic = new Topic();
+    List<Menu> Menus = new();
 
-    private void Create()
+    protected override async Task OnInitializedAsync()
     {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
-        Console.WriteLine($"Create topic: {Topic.Name}");
-        Console.WriteLine($"Content: {Topic.HtmlContent}");
+        try
+        {
+            Menus = await menuRepository.GetAllAsync();
+        }
+        catch (Exception ex)
+        {
+
+            navigationManager.NavigateTo($"/Error/{Uri.EscapeDataString(ex.Message)}");
+        }
+    }
+
+    private async Task Create()
+    {
+        try
+        {
+            await topicRepository.CreateTopicAsync(topic);
+            navigationManager.NavigateTo($"/menu/{topic.MenuId}/{StringUtilities.Translit(topic.Name)}");
+        }
+        catch (Exception ex)
+        {
+
+            navigationManager.NavigateTo($"/Error/{Uri.EscapeDataString(ex.Message)}");
+        }
     }
 }

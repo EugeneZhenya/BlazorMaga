@@ -5,6 +5,29 @@
             <div class="form-group">
                 <InputText type="text" name="Name" class="form-control" required placeholder="Тема" aria-required="true" @bind-Value="Topic.Name" />
             </div>
+
+            <div class="form-group">
+                <div class="select-wrap">
+                    <div class="select_container">
+                        <InputSelect id="menuSelect" @bind-Value="Topic.MenuId">
+                            <option value="0">Меню:</option>
+                            @if (Menus != null)
+                            {
+                                @foreach (var menu in Menus)
+                                {
+                                    <option value="@menu.Id">@menu.Name</option>
+                                }
+                            }
+                        </InputSelect>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <InputText type="text" name="Description" class="form-control" required placeholder="Опис" aria-required="true" @bind-Value="Topic.Description" />
+            </div>
+
             <div class="input-group" style="padding-top: 10px;">
                 <InputText type="text" name="Picture" class="search-field form-control" required placeholder="Постер" @bind-Value="Topic.Picture" @onfocus="OpenGallery" />
 
@@ -35,12 +58,12 @@
             <FileGallery @ref="Gallery" OnSelect="SelectFile" />
         </div>
 
+        <!--
         <div class="col-12">
             <HtmlEditor @bind-Content="Topic.HtmlContent" />
-            <!--
             <InputMarkdown @bind-Value="Topic.HtmlContent" Label="Вміст" For="@(() => Topic.HtmlContent)" />
-            -->
         </div>
+        -->
     </div>
     <button type="submit" class="btn btn-maincolor mt-30 d-block" style="margin-top: 50px;">Зберегти</button>
 </EditForm>
@@ -50,6 +73,7 @@
 
     [Parameter] public Topic Topic { get; set; }
     [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public List<Menu> Menus { get; set; }
 
     private FileGallery? Gallery;
 

@@ -2,6 +2,7 @@ using BlazorMaga;
 using BlazorMaga.Client.Pages;
 using BlazorMaga.Components;
 using BlazorMaga.Helpers;
+using BlazorMaga.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
@@ -14,6 +15,9 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddTransient<IRepository, RepositoryInMemory>();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IMenuRepository, MenuRepository>();
+builder.Services.AddScoped<ITopicRepository, TopicRepository>();
 
 
 var app = builder.Build();
