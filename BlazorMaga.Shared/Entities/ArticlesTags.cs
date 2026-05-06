@@ -12,5 +12,6 @@ namespace BlazorMaga.Shared.Entities
         public long TagId { get; set; }
         public Article Article { get; set; }
         public Tag Tag { get; set; }
+        public int Order { get; set; }
     }
 }
