@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-12">
                 <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
-                    <span>Додати нову статтю</span>
+                    <span>Додати статтю</span>
                 </h3>
                 <div class="line"></div>
                 <p class="text-center fs-20 mt-4">
@@ -46,7 +46,7 @@
         <div class="row">
             <div class="col-12">
                 <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
-                    <span>Додати нову тему</span>
+                    <span>Додати тему</span>
                 </h3>
                 <div class="line"></div>
                 <p class="text-center fs-20 mt-4">
@@ -54,6 +54,24 @@
                 </p>
                 <div class="divider-40 divider-xl-60"></div>
                 <button @onclick="AddNewTopic">Створити тему</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ds s-overlay s-parallax section-video s-py-90 s-pt-xl-150 s-pb-xl-200 text-center" style="background-position: 50% -12px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+                    <span>Додати позначку</span>
+                </h3>
+                <div class="line"></div>
+                <p class="text-center fs-20 mt-4">
+                    <span>Ви має бути авторизованим користувачем аби мати змогу додавати позначки</span>
+                </p>
+                <div class="divider-40 divider-xl-60"></div>
+                <button @onclick="AddNewTag">Створити позначку</button>
             </div>
         </div>
     </div>
@@ -76,5 +94,9 @@
     private void AddNewTopic()
     {
         navigationManager.NavigateTo("/topics/create");
+    }
+    private void AddNewTag(MouseEventArgs args)
+    {
+        navigationManager.NavigateTo("/tags/create");
     }
 }

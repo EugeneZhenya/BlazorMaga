@@ -1,0 +1,50 @@
+﻿@page "/tag/{TagId:int}"
+@page "/tag/{TagId:int}/{TagTitle}"
+@rendermode InteractiveServer
+@inject ITagRepository tagRepository
+@inject NavigationManager navigationManager
+
+<PageTitle>@((MarkupString)TagName)</PageTitle>
+
+<section class="page_title ds s-overlay s-parallax s-pt-130 s-pt-xl-150 s-pb-65">
+	<div class="container">
+		<div class="row">
+
+			<div class="col-md-12">
+				<h1>@((MarkupString)TagName)</h1>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						<a href="/">Початок</a>
+					</li>
+					<li class="breadcrumb-item">
+						<a href="/tags">Позначки</a>
+					</li>
+					<li class="breadcrumb-item active">
+						@((MarkupString)TagName)
+					</li>
+				</ol>
+			</div>
+
+		</div>
+	</div>
+</section>
+
+@code {
+	[Parameter] public int TagId { get; set; }
+	[Parameter] public string TagTitle { get; set; }
+	private string TagName = string.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var tagItem = await tagRepository.GetTagByIdAsync(TagId);
+			TagName = tagItem.Mark;
+		}
+		catch (Exception ex)
+		{
+
+			navigationManager.NavigateTo($"/Error/{Uri.EscapeDataString(ex.Message)}");
+		}
+	}
+}

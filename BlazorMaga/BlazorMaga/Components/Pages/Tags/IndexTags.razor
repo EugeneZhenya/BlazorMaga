@@ -1,6 +1,7 @@
 ﻿@page "/tags"
 @rendermode InteractiveServer
 @inject NavigationManager navigationManager
+@inject ITagRepository tagRepository
 
 <PageTitle>Позначки</PageTitle>
 
@@ -27,21 +28,12 @@
 	<div class="container">
 			<div class="widget widget_tag_cloud">
 				<div class="tagcloud">
-					<a href="blog-right.html" class="tag-cloud-link">
-						Astrology
+				@foreach (var tag in allTags)
+				{
+					<a href="/tag/@tag.Id/@StringUtilities.Translit(tag.Mark)" class="tag-cloud-link">
+						@tag.Mark
 					</a>
-
-					<a href="blog-right.html" class="tag-cloud-link">
-						Natal Chart
-					</a>
-
-					<a href="blog-right.html" class="tag-cloud-link">
-						Horoscope
-					</a>
-
-					<a href="blog-right.html" class="tag-cloud-link">
-						Magic
-					</a>
+				}
 				</div>
 			</div>
 		</div>
@@ -53,7 +45,7 @@
 		<div class="row">
 			<div class="col-12">
 				<h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
-					<span>Додати нову позначку</span>
+					<span>Додати позначку</span>
 				</h3>
 				<div class="line"></div>
 				<p class="text-center fs-20 mt-4">
@@ -67,6 +59,20 @@
 </section>
 
 @code {
+	private List<Tag> allTags = new List<Tag>();
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			allTags = await tagRepository.GetAllTagsAsync();
+		}
+		catch (Exception ex)
+		{
+
+			navigationManager.NavigateTo($"/Error/{Uri.EscapeDataString(ex.Message)}");
+		}
+	}
+
 	private void AddNewTag()
 	{
 		navigationManager.NavigateTo("/tags/create");

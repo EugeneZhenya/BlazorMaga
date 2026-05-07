@@ -1,5 +1,7 @@
 ﻿@page "/tags/create"
 @rendermode InteractiveServer
+@inject ITagRepository tagRepository
+@inject NavigationManager navigationManager
 
 <PageTitle>Додавання позначки</PageTitle>
 
@@ -26,10 +28,16 @@
 @code {
     private Tag tag = new Tag();
 
-    private void Create()
+    private async Task Create()
     {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
-        Console.WriteLine("Create method");
-        Console.WriteLine(tag.Mark);
+        try
+        {
+            await tagRepository.CreateTagAsync(tag);
+            navigationManager.NavigateTo("/tags");
+        }
+        catch (Exception ex)
+        {
+            navigationManager.NavigateTo($"/Error/{Uri.EscapeDataString(ex.Message)}");
+        }
     }
 }

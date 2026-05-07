@@ -23,6 +23,12 @@
                         <strong>Ідентифікатор запиту:</strong> <code>@RequestId</code>
                     </p>
                 }
+                @if (!string.IsNullOrEmpty(Message))
+                {
+                    <p>
+                        <strong>Деталі:</strong> @Message
+                    </p>
+                }
             </div>
         </div>
     </div>
@@ -48,12 +54,6 @@
                     Для локального налагодження увімкніть середовище розробника, встановивши змінну середовища <strong>ASPNETCORE_ENVIRONMENT</strong> у значення <strong>Development</strong>
                     та перезапустіть застосунок.
                 </p>
-                @if (!string.IsNullOrEmpty(Message))
-                {
-                    <p>
-                        <strong>Деталі:</strong> @Message
-                    </p>
-                }
             </div>
         </div>
     </div>
