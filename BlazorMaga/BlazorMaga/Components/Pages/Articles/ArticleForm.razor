@@ -1,4 +1,4 @@
-﻿<EditForm class="form-registration c-mb-20 c-gutter-20" Model="Article" OnValidSubmit="OnValidSubmit">
+﻿<EditForm class="form-registration c-mb-20 c-gutter-20" Model="Article" OnValidSubmit="OnDataAnnotationsValidated">
     <DataAnnotationsValidator />
     <div class="row">
         <div class="col-12">
@@ -170,5 +170,12 @@
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.WriteLine("Обрані теги: " + string.Join(", ", tags.Select(t => t.Mark)));
+    }
+
+    private async Task OnDataAnnotationsValidated()
+    {
+        Article.ArticlesTags = Selected.Select(x => new ArticlesTags { TagId = long.Parse(x.Key) }).ToList();
+
+        await OnValidSubmit.InvokeAsync(null);
     }
 }
