@@ -10178,7 +10178,7 @@ body.boxed {
         }
 
     .ds .links-maincolor2 a {
-        color: #219bf1;
+        color: #ca416e;
     }
 
         .ds .links-maincolor2 a:hover {
@@ -15438,7 +15438,7 @@ aside > * + * {
 .widget_popular_entries a:not(.btn),
 .widget_recent_posts a:not(.btn),
 .widget_posts_2cols a:not(.btn) {
-    color: #219bf1;
+    color: #ca416e;
 }
 
     .widget_popular_entries a:not(.btn):hover,

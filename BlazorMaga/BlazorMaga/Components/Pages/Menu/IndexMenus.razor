@@ -4,20 +4,19 @@
 @inject IMenuRepository menuRepository
 @inject NavigationManager navigationManager
 
-<PageTitle>@((MarkupString)MenuName)</PageTitle>
+<PageTitle>@((MarkupString)menu.Name)</PageTitle>
 
 <section class="page_title ds s-overlay s-parallax s-pt-130 s-pt-xl-150 s-pb-65">
 	<div class="container">
 		<div class="row">
-
 			<div class="col-md-12">
-				<h1>@((MarkupString)MenuName)</h1>
+				<h1>@((MarkupString)menu.Name)</h1>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item">
 						<a href="/">Початок</a>
 					</li>
 					<li class="breadcrumb-item active">
-						@((MarkupString)MenuName)
+						@((MarkupString)menu.Name)
 					</li>
 				</ol>
 			</div>
@@ -26,22 +25,107 @@
 	</div>
 </section>
 
+<section class="ds s-pt-90 s-pb-40 s-pt-xl-150 s-pb-xl-100 c-gutter-60 c-mb-50">
+	<div class="container">
+		<div class="row">
+			<GenericList List="menu.Topics">
+				<WholeListTemplate>
+					@if (menu.Topics != null)
+					{
+						@foreach (var topic in menu.Topics)
+						{
+							<div class="col-xl-4 col-lg-6">
+								<div class="vertical-item bg-darkblue text-center service-layout-1 box-shadow content-padding">
+									<div class="item-media">
+										<img src="@topic.Picture" alt="@((MarkupString)topic.Name)">
+										<div class="media-links">
+											<a class="abs-link" title="@((MarkupString)topic.Name)" href="/topics/@topic.Id/@StringUtilities.Translit(topic.Name)"></a>
+										</div>
+									</div>
+									<div class="item-content">
+										<h5 class="mt-0 links-maincolor2">
+											<a href="/topics/@topic.Id/@StringUtilities.Translit(topic.Name)">@((MarkupString)topic.Name)</a>
+										</h5>
+										<p>
+											@((MarkupString)topic.Description)
+										</p>
+										<a href="/topics/edit/@topic.Id" class="mt-30 font-2"><i class="fa fa-pencil-square-o color-main ml-2" aria-hidden="true"></i></a>
+										<a class="mt-30 font-2" @onclick="@(() => DeleteTopic(topic))" style="cursor: pointer"><i class="fa fa-trash-o color-main ml-2" aria-hidden="true"></i>&nbsp;&nbsp;</a>
+										<a href="/topics/@topic.Id/@StringUtilities.Translit(topic.Name)" class="mt-30 font-2">Перейти <i class="fa fa-caret-right color-main ml-2"></i></a>
+									</div>
+								</div>
+							</div>
+						}
+					}
+				</WholeListTemplate>
+			</GenericList>
+		</div>
+	</div>
+</section>
+
+<section class="ds s-overlay s-parallax section-video s-py-90 s-pt-xl-150 s-pb-xl-200 text-center" style="background-position: 50% -12px;">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+					<span>Додати тему</span>
+				</h3>
+				<div class="line"></div>
+				<p class="text-center fs-20 mt-4">
+					<span>Ви має бути авторизованим користувачем аби мати змогу додавати теми</span>
+				</p>
+				<div class="divider-40 divider-xl-60"></div>
+				<button @onclick="AddNewTopic">Створити тему</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<Confirmation @ref="confirmation" onCancel="onCancel" onConfirm="onConfirm">
+	<div>Ви впевнені, що хочете видалити тему «@((MarkupString)topicToBeDeleted.Name)»?</div>
+</Confirmation>
+
 @code {
 	[Parameter] public int MenuId { get; set; }
 	[Parameter] public string MenuTitle { get; set; }
-    private string MenuName = string.Empty;
+    Menu menu = new Menu();
+	Confirmation confirmation;
 
 	protected override async Task OnInitializedAsync()
 	{
 		try
 		{
-			var menuItem = await menuRepository.GetMenuByIdAsync(MenuId);
-			MenuName = menuItem.Name;
+			menu = await menuRepository.GetMenuByIdAsync(MenuId);
 		}
 		catch (Exception ex)
 		{
 
 			navigationManager.NavigateTo($"/Error/{Uri.EscapeDataString(ex.Message)}");
 		}
+	}
+
+	private void AddNewTopic()
+	{
+		navigationManager.NavigateTo("/topics/create");
+	}
+
+	Topic topicToBeDeleted;
+	private async Task DeleteTopic(Topic topic)
+	{
+		topicToBeDeleted = topic;
+		confirmation.Show();
+	}
+
+	void onConfirm()
+	{
+		// Topics.Remove(topicToBeDeleted);
+		confirmation.Hide();
+		topicToBeDeleted = null;
+	}
+
+	void onCancel()
+	{
+		confirmation.Hide();
+		topicToBeDeleted = null;
 	}
 }

@@ -25,7 +25,10 @@
                 <div class="divider-50 divider-xl-60"></div>
             </div>
             <div class="col-12">
-                <ArticleForm Article="Article" OnValidSubmit="SaveArticle" NotSelectedTags="NotSelectedTags" Menus="AllMenus" Topics="AllTopics" />
+                @if (NotSelectedTags != null)
+                {
+                    <ArticleForm Article="Article" OnValidSubmit="SaveArticle" NotSelectedTags="NotSelectedTags" Menus="AllMenus" Topics="AllTopics" />
+                }
             </div>
         </div>
     </div>

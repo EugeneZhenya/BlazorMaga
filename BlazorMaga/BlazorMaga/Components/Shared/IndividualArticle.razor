@@ -36,13 +36,13 @@
 			</header>
 			<div class="entry-content mt-20">
 				<p>
-					Короткий опис першої статті.
+					@((MarkupString)(Article.Description))
 				</p>
 			</div>
 			<div class="entry-footer flex-row mt-4">
 				<div class="entry-meta">
 					<span>
-						<a href="blog-single-right.html" rel="bookmark">
+						<a href="/date/@Article.Created.ToString()" rel="bookmark">
 							<time class="entry-date published updated" datetime="@Article.Created.ToString()">@((MarkupString)(@Article.Created.ToString("dd MMM yyyy")))</time>
 						</a>
 					</span>

@@ -1,25 +1,27 @@
 ﻿@page "/topics/{TopicId:int}"
 @page "/topics/{TopicId:int}/{TopicTitle}"
 @rendermode InteractiveServer
+@inject ITopicRepository topicRepository
+@inject IMenuRepository menuRepository
+@inject ITagRepository tagRepository
 @inject NavigationManager navigationManager
 
-<PageTitle>@TopicTitle</PageTitle>
+<PageTitle>@((MarkupString)topic.Name)</PageTitle>
 
 <section class="page_title ds s-overlay s-parallax s-pt-130 s-pt-xl-150 s-pb-65">
 	<div class="container">
 		<div class="row">
-
 			<div class="col-md-12">
-				<h1>@TopicTitle</h1>
+				<h1>@((MarkupString)topic.Name)</h1>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item">
 						<a href="/">Початок</a>
 					</li>
 					<li class="breadcrumb-item">
-						<a href="#">Меню</a>
+						<a href="/menu/@menu.Id/@menuTitle">@((MarkupString)menu.Name)</a>
 					</li>
 					<li class="breadcrumb-item active">
-						@TopicTitle
+						@((MarkupString)topic.Name)
 					</li>
 				</ol>
 			</div>
@@ -27,204 +29,181 @@
 	</div>
 </section>
 
-<!--
-<section class="ds s-pt-90 s-pt-xl-155 s-pb-30 s-pb-xl-85">
+<section class="ds s-py-90 s-py-xl-150">
 	<div class="container">
-		<div class="row">
-			<div class="col-lg-12">
-				<div class="row justify-content-center">
-					<div class="col-md-10 col-xl-8">
-						<div class="filters gallery-filters text-lg-right">
-							<a href="#" data-filter="*" class="active selected">All</a>
-							<a href="#" data-filter=".astrology">Astrology</a>
-							<a href="#" data-filter=".magic">Magic</a>
-							<a href="#" data-filter=".taro">Taro</a>
-							<a href="#" data-filter=".horoscope">Horoscope</a>
-							<a href="#" data-filter=".stone">Stone</a>
+		<div class="row c-gutter-60">
+			<main class="col-lg-7 col-xl-8">
+				<GenericList List="topic.Articles">
+					<WholeListTemplate>
+						@if (topic.Articles != null)
+						{
+							@foreach (var article in topic.Articles)
+							{
+								<article class="text-center ds bs text-md-left vertical-item content-padding post type-post status-publish format-standard has-post-thumbnail sticky">
+									<div class="item-media post-thumbnail">
+										<img src="@article.Picture" alt="@((MarkupString)article.Title)">
+										<div class="media-links">
+											<a class="abs-link" href="/article/@article.Id/@StringUtilities.Translit(article.Title)"></a>
+										</div>
+									</div>
+									<div class="item-content">
+										<header class="entry-header">
+											<span class="cat-links">
+												<a href="/menu/@menu.Id/@menuTitle" rel="category tag">
+													@((MarkupString)menu.Name)
+												</a>,
+											</span>
+											<h4 class="entry-title mb-3 links-maincolor2">
+												<a class="fs-30" href="/article/@article.Id/@StringUtilities.Translit(article.Title)" rel="bookmark">
+													@((MarkupString)article.Title)
+												</a>
+											</h4>
+										</header>
+										<div class="entry-content mt-35">
+											<p>
+												@((MarkupString)article.Description)
+											</p>
+										</div>
+										<div class="entry-footer">
+											<div class="entry-meta">
+												<span>
+													<a href="/date/@article.Created.ToString()" rel="bookmark">
+														<time class="entry-date published updated" datetime="@article.Created.ToString()">@((MarkupString)(@article.Created.ToString("dd MMM yyyy")))</time>
+													</a>
+												</span>
+												<!--
+												<span class="comments-link">
+													<i class="fa fa-comments"></i>
+													<span class="screen-reader-text">4 Comments</span>
+													<a href="blog-single-right.html">4</a>
+												</span>
+												-->
+											</div>
+											<div>
+												<a href="/articles/edit/@article.Id" class="mt-30 font-2"><i class="fa fa-pencil-square-o color-main ml-2" aria-hidden="true"></i></a>
+												<a class="mt-30 font-2" @onclick="@(() => DeleteArticle(article))" style="cursor: pointer"><i class="fa fa-trash-o color-main ml-2" aria-hidden="true"></i>&nbsp;&nbsp;</a>
+												<a href="/article/@article.Id/@StringUtilities.Translit(article.Title)" class="mt-30 font-2">Читати <i class="fa fa-caret-right color-main ml-2"></i></a>
+											</div>
+										</div>
+										<!-- Теги
+										<div class="tag-wrapper mt-30">
+											<span class="tag-links">
+												<a href="blog-single-right.html" rel="tag">Post</a>
+												<a href="blog-single-right.html" rel="tag">Simple post</a>
+											</span>
+										</div>
+										-->
+									</div>
+								</article>
+							}
+						}
+					</WholeListTemplate>
+				</GenericList>
+			</main>
+
+			<aside class="col-lg-5 col-xl-4">
+				<div class="widget widget_categories">
+					<h3 class="widget-title">Теми</h3>
+					<ul>
+						@if (menu.Topics != null)
+						{
+							@foreach (var topic in menu.Topics)
+							{
+								<li class="cat-item">
+									<a href="/topics/@topic.Id/@StringUtilities.Translit(topic.Name)">@((MarkupString)topic.Name)</a>
+								</li>
+							}
+						}
+					</ul>
+				</div>
+
+				<div class="ds bs box-shadow">
+					<div class="widget widget_search">
+						<h3 class="widget-title">Пошук</h3>
+						<form role="search" method="get" class="search-form" action="/articles/search">
+							<label for="search-form-widget">
+								<span class="screen-reader-text">Шукати:</span>
+							</label>
+							<input type="search" id="search-form-widget" class="search-field form-control" placeholder="Шукати" value="" name="search">
+							<button type="submit" class="search-submit">
+								<span class="screen-reader-text">Шукати</span>
+							</button>
+						</form>
+					</div>
+				</div>
+
+				<div class="ds">
+					<div class="widget widget_tag_cloud">
+						<h3 class="widget-title">Ключові слова</h3>
+						<div class="tagcloud">
+							@if (tags != null)
+							{
+								@foreach (var tag in tags)
+								{
+									<a href="/tag/@tag.Id/@StringUtilities.Translit(tag.Mark)" class="tag-cloud-link">
+										@((MarkupString)tag.Mark)
+									</a>
+								}
+							}
 						</div>
 					</div>
 				</div>
-				<div class="row isotope-wrapper masonry-layout c-mb-60" data-filters=".gallery-filters" style="position: relative; height: 1461.5px;">
-					<div class="col-xl-4 col-md-6 magic stone" style="position: absolute; left: 0%; top: 0px;">
 
-						<div class="vertical-item box-shadow bs ds bordered content-padding">
-							<div class="item-media">
-								<img src="images/gallery/08.jpg" alt="img">
-								<div class="media-links">
-									<div class="links-wrap">
-										<a class="link-anchor" title="" href="gallery-single.html"></a>
-									</div>
-								</div>
-							</div>
-							<div class="item-content">
-								<p class="cat-links">
-									<a href="#">Magic</a>,
-									<a href="#">Stone</a>
+				<div class="widget widget_recent_posts">
+					<h3 class="widget-title">Найпопулярніші статті</h3>
+					<!--
+					<ul class="list-unstyled">
+						<li class="media">
+							<a class="media-image" href="blog-single-right.html">
+								<img src="images/recent_post1.jpg" alt="img">
+							</a>
+							<div class="media-body">
+								<h4>
+									<a href="blog-single-right.html">Eod tempor invidunt labore dolore magna</a>
+								</h4>
+								<p class="item-meta">
+									Dec 18, 2018
 								</p>
-								<h6 class="mb-1 mt-0">
-									<a href="gallery-single.html">Lorem ipsum dolor sit</a>
-								</h6>
 							</div>
-						</div>
+						</li>
 
-					</div>
-					<div class="col-xl-4 col-md-6 horoscope astrology" style="position: absolute; left: 33.3333%; top: 0px;">
-						<div class="vertical-item box-shadow bs ds bordered content-padding">
-							<div class="item-media">
-								<img src="images/gallery/09.jpg" alt="img">
-								<div class="media-links">
-									<div class="links-wrap">
-										<a class="link-anchor" title="" href="gallery-single.html"></a>
-									</div>
-								</div>
-							</div>
-							<div class="item-content">
-								<p class="cat-links">
-									<a href="#">Astrology</a>
-									<a href="#">Horoscope</a>
+						<li class="media">
+							<a class="media-image" href="blog-single-right.html">
+								<img src="images/recent_post2.jpg" alt="img">
+							</a>
+							<div class="media-body">
+								<h4>
+									<a href="blog-single-right.html">Aliquyam erat, sed voluptua vero eos </a>
+								</h4>
+								<p class="item-meta">
+									Nov 22, 2018
 								</p>
-								<h6 class="mb-1 mt-0">
-									<a href="gallery-single.html">Amet consetetur sadipscing</a>
-								</h6>
+
 							</div>
-						</div>
-					</div>
-					<div class="col-xl-4 col-md-6 taro stone horoscope" style="position: absolute; left: 66.6667%; top: 0px;">
-						<div class="vertical-item box-shadow bs ds bordered content-padding">
-							<div class="item-media">
-								<img src="images/gallery/10.jpg" alt="img">
-								<div class="media-links">
-									<div class="links-wrap">
-										<a class="link-anchor" title="" href="gallery-single.html"></a>
-									</div>
-								</div>
-							</div>
-							<div class="item-content">
-								<p class="cat-links">
-									<a href="#">Taro</a>
-									<a href="#">Stone</a>
-									<a href="#">Horoscope</a>
+						</li>
+
+						<li class="media">
+							<a class="media-image" href="blog-single-right.html">
+								<img src="images/recent_post1.jpg" alt="img">
+							</a>
+							<div class="media-body">
+								<h4>
+									<a href="blog-single-right.html">Et justo duo dolores et ea rebum</a>
+								</h4>
+								<p class="item-meta">
+									Nov 12, 2018
 								</p>
-								<h6 class="mb-1 mt-0">
-									<a href="gallery-single.html">Elitr sed diam nonumy</a>
-								</h6>
+
 							</div>
-						</div>
-					</div>
-					<div class="col-xl-4 col-md-6 magic taro" style="position: absolute; left: 0%; top: 481.5px;">
-						<div class="vertical-item box-shadow bs ds bordered content-padding">
-							<div class="item-media">
-								<img src="images/gallery/11.jpg" alt="img">
-								<div class="media-links">
-									<div class="links-wrap">
-										<a class="link-anchor" title="" href="gallery-single.html"></a>
-									</div>
-								</div>
-							</div>
-							<div class="item-content">
-								<p class="cat-links">
-									<a href="#">Taro</a>
-									<a href="#">Magic</a>
-								</p>
-								<h6 class="mb-1 mt-0">
-									<a href="gallery-single.html">Tempor invidunt ut</a>
-								</h6>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-4 col-md-6 horoscope astrology" style="position: absolute; left: 33.3333%; top: 481.5px;">
-						<div class="vertical-item box-shadow bs ds bordered content-padding">
-							<div class="item-media">
-								<img src="images/gallery/12.jpg" alt="img">
-								<div class="media-links">
-									<div class="links-wrap">
-										<a class="link-anchor" title="" href="gallery-single.html"></a>
-									</div>
-								</div>
-							</div>
-							<div class="item-content">
-								<p class="cat-links">
-									<a href="#">Horoscope</a>
-									<a href="#">Astrology</a>
-								</p>
-								<h6 class="mb-1 mt-0">
-									<a href="gallery-single.html">Labore et dolore magna</a>
-								</h6>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-4 col-md-6 taro stone astrology" style="position: absolute; left: 66.6667%; top: 481.5px;">
-						<div class="vertical-item box-shadow bs ds bordered content-padding">
-							<div class="item-media">
-								<img src="images/gallery/13.jpg" alt="img">
-								<div class="media-links">
-									<div class="links-wrap">
-										<a class="link-anchor" title="" href="gallery-single.html"></a>
-									</div>
-								</div>
-							</div>
-							<div class="item-content">
-								<p class="cat-links">
-									<a href="#">Taro</a>
-									<a href="#">Stone</a>
-									<a href="#">Astrology</a>
-								</p>
-								<h6 class="mb-1 mt-0">
-									<a href="gallery-single.html">Aliquyam erat sed diam</a>
-								</h6>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-4 col-md-6 magic stone horoscope" style="position: absolute; left: 0%; top: 963px;">
-						<div class="vertical-item box-shadow bs ds bordered content-padding">
-							<div class="item-media">
-								<img src="images/gallery/14.jpg" alt="img">
-								<div class="media-links">
-									<div class="links-wrap">
-										<a class="link-anchor" title="" href="gallery-single.html"></a>
-									</div>
-								</div>
-							</div>
-							<div class="item-content">
-								<p class="cat-links">
-									<a href="#">Horoscope</a>
-									<a href="#">Stone</a>
-									<a href="#">Magic</a>
-								</p>
-								<h6 class="mb-1 mt-0">
-									<a href="gallery-single.html">Voluptua vero</a>
-								</h6>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-4 col-md-6 magic taro astrology" style="position: absolute; left: 33.3333%; top: 963px;">
-						<div class="vertical-item box-shadow bs ds bordered content-padding">
-							<div class="item-media">
-								<img src="images/gallery/15.jpg" alt="img">
-								<div class="media-links">
-									<div class="links-wrap">
-										<a class="link-anchor" title="" href="gallery-single.html"></a>
-									</div>
-								</div>
-							</div>
-							<div class="item-content">
-								<p class="cat-links">
-									<a href="#">Astrology</a>
-									<a href="#">Taro</a>
-									<a href="#">Magic</a>
-								</p>
-								<h6 class="mb-1 mt-0">
-									<a href="gallery-single.html">Eos et accusam justo duo</a>
-								</h6>
-							</div>
-						</div>
-					</div>
+						</li>
+					</ul>
+					-->
 				</div>
-			</div>
+			</aside>
 		</div>
+
 	</div>
 </section>
--->
 
 <section class="ds s-overlay s-parallax section-video s-py-90 s-pt-xl-150 s-pb-xl-200 text-center" style="background-position: 50% -12px;">
 	<div class="container">
@@ -244,12 +223,79 @@
 	</div>
 </section>
 
+<section class="ds s-overlay s-parallax s-py-90 s-pt-xl-150 s-pb-xl-200 text-center" style="background-position: 50% -12px;">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h3 class="text-center mt-0 mb-2 special-heading fs-60 color-main">
+					<span>Додати статтю</span>
+				</h3>
+				<div class="line"></div>
+				<p class="text-center fs-20 mt-4">
+					<span>Ви має бути авторизованим користувачем аби мати змогу додавати статті</span>
+				</p>
+				<div class="divider-40 divider-xl-60"></div>
+				<button @onclick="AddNewArticle">Створити статтю</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<Confirmation @ref="confirmation" onCancel="onCancel" onConfirm="onConfirm">
+	<div>Ви впевнені, що хочете видалити статтю «@((MarkupString)articleToBeDeleted.Title)»?</div>
+</Confirmation>
+
 @code {
 	[Parameter] public int TopicId { get; set; }
 	[Parameter] public string TopicTitle { get; set; }
+	Topic topic = new Topic();
+    Menu menu = new Menu();
+    string menuTitle = string.Empty;
+	Confirmation confirmation;
+    List<Tag> tags = new List<Tag>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			topic = await topicRepository.GetTopicByIdAsync(TopicId);
+            menu = await menuRepository.GetMenuByIdAsync(topic.MenuId);
+            menuTitle = StringUtilities.Translit(menu.Name);
+			tags = await tagRepository.GetAllTagsAsync();
+		}
+		catch (Exception ex)
+		{
+			navigationManager.NavigateTo($"/Error/{Uri.EscapeDataString(ex.Message)}");
+		}
+	}
 
 	private void AddNewTopic()
 	{
 		navigationManager.NavigateTo("/topics/create");
+	}
+
+	private void AddNewArticle()
+	{
+		navigationManager.NavigateTo("/articles/create");
+	}
+
+	Article articleToBeDeleted;
+	private async Task DeleteArticle(Article article)
+	{
+		articleToBeDeleted = article;
+		confirmation.Show();
+	}
+
+	void onConfirm()
+	{
+		// Articles.Remove(articleToBeDeleted);
+		confirmation.Hide();
+		articleToBeDeleted = null;
+	}
+
+	void onCancel()
+	{
+		confirmation.Hide();
+		articleToBeDeleted = null;
 	}
 }

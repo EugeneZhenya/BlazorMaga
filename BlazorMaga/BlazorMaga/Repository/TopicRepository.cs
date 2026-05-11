@@ -19,7 +19,7 @@ namespace BlazorMaga.Repository
             return topic;
         }
 
-        public async Task<Topic?> GetTopicByIdAsync(long id) => await _db.Topics.Include(t => t.Menu).FirstOrDefaultAsync(t => t.Id == id);
+        public async Task<Topic?> GetTopicByIdAsync(long id) => await _db.Topics.Include(t => t.Menu).Include(a => a.Articles).FirstOrDefaultAsync(t => t.Id == id);
 
         public async Task<List<Topic>> GetAllTopicsAsync() => await _db.Topics.Include(t => t.Menu).ToListAsync();
     }
