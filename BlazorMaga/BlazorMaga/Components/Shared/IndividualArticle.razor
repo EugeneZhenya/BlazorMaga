@@ -23,8 +23,8 @@
 		<div class="item-content">
 			<span class="cat-links">
 				<span class="screen-reader-text">Категорії</span>
-				<a href="blog-right.html" rel="category tag">
-					Астрологія
+				<a href="@menuURL" rel="category tag">
+					@((MarkupString)(Article.Topic.Menu.Name))
 				</a>
 			</span>
 			<header class="entry-header">
@@ -72,8 +72,8 @@ else
 				<div class="item-content">
 					<span class="cat-links">
 						<span class="screen-reader-text">Категорії</span>
-						<a href="#" rel="category tag">
-							Астрологія
+						<a href="@menuURL" rel="category tag">
+							@((MarkupString)(Article.Topic.Menu.Name))
 						</a>
 					</span>
 					<header class="entry-header">
@@ -86,13 +86,13 @@ else
 
 					<div class="entry-content mt-20">
 						<p>
-							Тут має бути короткий опис статті.
+							@((MarkupString)(Article.Description))
 						</p>
 					</div>
 					<div class="entry-footer flex-row mt-4">
 						<div class="entry-meta">
 							<span>
-								<a href="blog-single-right.html" rel="bookmark">
+								<a href="/date/@Article.Created.ToString()" rel="bookmark">
 									<time class="entry-date published updated" datetime="@Article.Created.ToString()">@((MarkupString)(@Article.Created.ToString("dd MMM yyyy")))</time>
 								</a>
 							</span>
@@ -115,9 +115,11 @@ else
 	[Parameter] public EventCallback<Article> DeleteArticle { get; set; }
 
 	private string articleURL = string.Empty;
+	private string menuURL = string.Empty;
 
 	protected override void OnInitialized()
 	{
 		articleURL = $"article/{Article.Id}/{StringUtilities.Translit(Article.Title)}";
+		menuURL = $"menu/{Article.Topic.MenuId}/{StringUtilities.Translit(Article.Topic.Menu.Name)}";
 	}
 }

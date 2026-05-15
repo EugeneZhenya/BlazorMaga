@@ -174,7 +174,7 @@
 
     private async Task OnDataAnnotationsValidated()
     {
-        Article.ArticlesTags = Selected.Select(x => new ArticlesTags { TagId = long.Parse(x.Key) }).ToList();
+        Article.ArticlesTags = SelectedTags.Select(x => new ArticlesTags { TagId = x.Id }).ToList();
 
         await OnValidSubmit.InvokeAsync(null);
     }

@@ -1,6 +1,6 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@inject IRepository repository
+@inject IArticleRepository articleRepository
 @inject NavigationManager navigationManager
 
 <PageTitle>Джйотіш - вчення всевідання</PageTitle>
@@ -81,8 +81,18 @@
     private List<Article> articles;
     protected async override Task OnInitializedAsync()
     {
-        // await Task.Delay(2000); // Імітація завантаження даних
-        articles = repository.GetArticles();
+        articles = await articleRepository.GetLastArticlesAsync(3);
+        if (articles.Count > 0)
+        {
+            foreach (var article in articles)
+            {
+                if (article == articles.FirstOrDefault())
+                {
+                    article.isFirst = true;
+                    break;
+                }
+            }
+        }
     }
 
     private void AddNewArticle()

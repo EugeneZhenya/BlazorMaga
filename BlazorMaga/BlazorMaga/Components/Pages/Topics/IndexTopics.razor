@@ -85,14 +85,17 @@
 												<a href="/article/@article.Id/@StringUtilities.Translit(article.Title)" class="mt-30 font-2">Читати <i class="fa fa-caret-right color-main ml-2"></i></a>
 											</div>
 										</div>
-										<!-- Теги
-										<div class="tag-wrapper mt-30">
-											<span class="tag-links">
-												<a href="blog-single-right.html" rel="tag">Post</a>
-												<a href="blog-single-right.html" rel="tag">Simple post</a>
-											</span>
-										</div>
-										-->
+										@if (article.ArticlesTags.Count > 0)
+										{
+											<div class="tag-wrapper mt-30">
+												<span class="tag-links">
+													@foreach (var tag in article.ArticlesTags)
+													{
+														<a href="/tag/@tag.Tag.Id/@StringUtilities.Translit(tag.Tag.Mark)" rel="tag">@tag.Tag.Mark</a>
+													}
+												</span>
+											</div>
+										}
 									</div>
 								</article>
 							}

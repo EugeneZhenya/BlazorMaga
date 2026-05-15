@@ -1,6 +1,7 @@
 ﻿@page "/articles/search"
 @rendermode InteractiveServer
-@inject IRepository repository
+@inject IArticleRepository articleRepository
+@inject NavigationManager navigationManager
 
 <PageTitle>Пошук статей</PageTitle>
 
@@ -33,7 +34,7 @@
 						</label>
 						<input type="search" id="searchQuery" class="search-field form-control" placeholder="Шукати"
 							   @bind-value:event="oninput" @bind-value="searchText" @onkeypress="@((KeyboardEventArgs e) => SearchKeyPress(e))" name="search">
-						<button type="button" class="search-submit" @onclick="SearchForArticles">
+						<button type="button" class="search-submit" @onclick="DoSearch">
 							<span class="screen-reader-text">Шукати</span>
 						</button>
 					</div>
@@ -67,7 +68,7 @@
 							</ElementTemplate>
 						</GenericList>
 					</div>
-					
+
 				</div>
 			</div>
 		</div>
@@ -81,25 +82,49 @@
 @code {
 	Confirmation confirmation;
 	private List<Article> Articles;
-    string searchText = string.Empty;
+	string searchText = string.Empty;
 	string searchQuery = string.Empty;
 
-	private void SearchForArticles()
+	protected override async Task OnInitializedAsync()
+	{
+		var uri = new Uri(navigationManager.Uri);
+		var queryParams = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+		if (queryParams.TryGetValue("search", out var search))
+		{
+			searchText = search!;
+			searchQuery = searchText;
+		}
+
+		await SearchForArticles();
+	}
+
+	private async Task SearchForArticles()
 	{
 		if (!string.IsNullOrWhiteSpace(searchQuery))
 		{
-			var allArticles = repository.GetALLArticles();
-			Articles = allArticles.Where(x => x.Content.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
-			Console.WriteLine($"Search query: {searchQuery}");
-        }
-    }
+			Articles = await articleRepository.SearchAsync(searchQuery);
+		}
+		else
+		{
+			Articles = await articleRepository.GetLastArticlesAsync(24);
+		}
+	}
 
-	private void SearchKeyPress(KeyboardEventArgs e)
+	private async Task DoSearch()
+	{
+		navigationManager.NavigateTo($"/articles/search?search={Uri.EscapeDataString(searchText)}");
+		searchQuery = searchText;
+		await SearchForArticles();
+	}
+
+	private async Task SearchKeyPress(KeyboardEventArgs e)
 	{
 		if (e.Key == "Enter")
 		{
+			navigationManager.NavigateTo($"/articles/search?search={Uri.EscapeDataString(searchText)}");
             searchQuery = searchText;
-			SearchForArticles();
+			await SearchForArticles();
 		}
 	}
 

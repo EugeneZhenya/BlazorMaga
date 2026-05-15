@@ -12,8 +12,8 @@ namespace BlazorMaga.Repository
             _db = db;
         }
 
-        public async Task<List<Menu>> GetAllAsync() => await _db.Menus.Include(t => t.Topics).ToListAsync();
+        public async Task<List<Menu>> GetAllAsync() => await _db.Menus.Include(t => t.Topics.OrderBy(x => x.Id)).ToListAsync();
 
-        public async Task<Menu> GetMenuByIdAsync(int id) => await _db.Menus.Include(t => t.Topics).FirstOrDefaultAsync(m => m.Id == id);
+        public async Task<Menu> GetMenuByIdAsync(int id) => await _db.Menus.Include(t => t.Topics.OrderBy(x => x.Id)).FirstOrDefaultAsync(m => m.Id == id);
     }
 }
